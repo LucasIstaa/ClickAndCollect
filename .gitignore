@@ -1,0 +1,93 @@
+## --- Build outputs ---
+bin/
+obj/
+out/
+[Bb]uild/
+[Ll]og/
+
+## --- Visual Studio ---
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## --- NuGet ---
+*.nupkg
+*.snupkg
+packages/
+*.nuget.props
+*.nuget.targets
+
+# Empêche la restauration locale
+project.lock.json
+project.assets.json
+
+## --- Configuration locale ---
+appsettings.Development.json
+appsettings.Local.json
+appsettings.*.local.json
+
+## --- Logs ---
+*.log
+logs/
+
+## --- Cache ---
+*.cache
+*.db
+*.db-shm
+*.db-wal
+
+## --- OS files ---
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+## --- IDE ---
+# JetBrains Rider
+.idea/
+*.DotSettings.user
+
+# VS Code
+.vscode/
+*.code-workspace
+
+## --- Temporary files ---
+*.tmp
+*.temp
+*.bak
+*.old
+
+## --- Publish output ---
+publish/
+dist/
+
+## --- Entity Framework (si utilisé) ---
+Migrations/
+
+## --- Secrets ---
+secrets.json
+*.key
+*.pfx
+
+## --- ADO.NET specifics ---
+# Fichiers de connexion générés
+*.mdf
+*.ldf
+*.dbmdl
+
+# Dataset designer
+*.xsd
+*.xss
+*.xsc
+*.xsd.cs
+
+# TableAdapters
+*.Designer.cs
+*.resx
