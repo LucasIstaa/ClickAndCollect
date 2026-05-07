@@ -1,0 +1,33 @@
+﻿@model List<ClickAndCollect.Models.Product>
+
+<h2>Liste des produits</h2>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-info">
+        Aucun produit disponible pour le moment.
+    </div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Prix (€)</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var p in Model)
+            {
+                <tr>
+                    <td>@p.ProductId</td>
+                    <td>@p.Name</td>
+                    <td>@p.Price</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

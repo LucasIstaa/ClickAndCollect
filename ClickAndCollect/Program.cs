@@ -1,7 +1,14 @@
+using ClickAndCollect.Models.DAL;
+using ClickAndCollect.Models.DALClasses;
+using ClickAndCollect.Models.DALInterfaces;
+
 var builder = WebApplication.CreateBuilder(args);
 
+string? connectionString = builder.Configuration.GetConnectionString("default");
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddTransient<IStoreDAL>(storeDAL => new StoreDAL(connectionString));
+builder.Services.AddTransient<IProductDAL>(productDAL => new ProductDAL(connectionString));
 
 var app = builder.Build();
 
@@ -21,7 +28,7 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    name: "other",
+    pattern: "{controller=Product}/{action=GetAllProducts}");
 
 app.Run();
