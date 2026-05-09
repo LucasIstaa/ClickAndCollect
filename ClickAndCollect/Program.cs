@@ -9,6 +9,9 @@ string? connectionString = builder.Configuration.GetConnectionString("default");
 builder.Services.AddControllersWithViews();
 builder.Services.AddTransient<IStoreDAL>(storeDAL => new StoreDAL(connectionString));
 builder.Services.AddTransient<IProductDAL>(productDAL => new ProductDAL(connectionString));
+builder.Services.AddTransient<IUserDAL>(userDAL => new UserDAL(connectionString));
+
+builder.Services.AddSession();
 
 var app = builder.Build();
 
@@ -24,6 +27,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseSession();
 
 app.UseAuthorization();
 

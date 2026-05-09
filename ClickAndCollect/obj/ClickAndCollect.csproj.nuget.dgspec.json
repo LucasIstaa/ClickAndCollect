@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\App-code\\ClickAndCollect\\ClickAndCollect\\ClickAndCollect\\ClickAndCollect.csproj": {}
+    "C:\\Users\\geoff\\OneDrive\\Bureau\\Files\\Info\\BAC 2\\Q2\\Application informatique 2\\Projet git\\ClickAndCollect\\ClickAndCollect.csproj": {}
   },
   "projects": {
-    "D:\\App-code\\ClickAndCollect\\ClickAndCollect\\ClickAndCollect\\ClickAndCollect.csproj": {
+    "C:\\Users\\geoff\\OneDrive\\Bureau\\Files\\Info\\BAC 2\\Q2\\Application informatique 2\\Projet git\\ClickAndCollect\\ClickAndCollect.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\App-code\\ClickAndCollect\\ClickAndCollect\\ClickAndCollect\\ClickAndCollect.csproj",
+        "projectUniqueName": "C:\\Users\\geoff\\OneDrive\\Bureau\\Files\\Info\\BAC 2\\Q2\\Application informatique 2\\Projet git\\ClickAndCollect\\ClickAndCollect.csproj",
         "projectName": "ClickAndCollect",
-        "projectPath": "D:\\App-code\\ClickAndCollect\\ClickAndCollect\\ClickAndCollect\\ClickAndCollect.csproj",
-        "packagesPath": "C:\\Users\\lucas\\.nuget\\packages\\",
-        "outputPath": "D:\\App-code\\ClickAndCollect\\ClickAndCollect\\ClickAndCollect\\obj\\",
+        "projectPath": "C:\\Users\\geoff\\OneDrive\\Bureau\\Files\\Info\\BAC 2\\Q2\\Application informatique 2\\Projet git\\ClickAndCollect\\ClickAndCollect.csproj",
+        "packagesPath": "C:\\Users\\geoff\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\geoff\\OneDrive\\Bureau\\Files\\Info\\BAC 2\\Q2\\Application informatique 2\\Projet git\\ClickAndCollect\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\lucas\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\geoff\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -46,7 +46,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.300"
+        "SdkAnalysisLevel": "10.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -77,7 +77,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.300-preview.0.26177.108/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.203/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
