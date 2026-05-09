@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ClickAndCollect")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d09fad6cdb9f9ba1c9d9f368ebe5a1adba54878b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+347c26b4417f7efa6feead2edc21881cb02e56c1")]
 [assembly: System.Reflection.AssemblyProductAttribute("ClickAndCollect")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ClickAndCollect")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
