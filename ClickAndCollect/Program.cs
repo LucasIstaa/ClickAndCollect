@@ -9,6 +9,7 @@ string? connectionString = builder.Configuration.GetConnectionString("default");
 builder.Services.AddControllersWithViews();
 builder.Services.AddTransient<IStoreDAL>(storeDAL => new StoreDAL(connectionString));
 builder.Services.AddTransient<IProductDAL>(productDAL => new ProductDAL(connectionString));
+builder.Services.AddTransient<ICategoryDAL>(categoryDAL => new CategoryDAL(connectionString));
 
 var app = builder.Build();
 
@@ -30,5 +31,9 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "other",
     pattern: "{controller=Product}/{action=GetAllProducts}");
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}");
 
 app.Run();

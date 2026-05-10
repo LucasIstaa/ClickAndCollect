@@ -48,6 +48,34 @@ namespace ClickAndCollect.Models.DALClasses
             throw new NotImplementedException();
         }
 
+        public async Task<List<Product>> GetProductsByCategoryAsync(int? categoryid)
+        {
+            List<Product> products = new List<Product>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("SELECT * FROM dbo.Product WHERE CategoryId = @categoryid", connection);
+                cmd.Parameters.AddWithValue("categoryid", categoryid);
+
+                await connection.OpenAsync();
+
+                using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        int id = reader.GetInt32(reader.GetOrdinal("ProductId"));
+                        String name = reader.GetString(reader.GetOrdinal("name"));
+                        decimal price = reader.GetDecimal(reader.GetOrdinal("price"));
+                        Product p = new Product(id, name, price);
+                        products.Add(p);
+                    }
+                }
+
+            }
+
+            return products;
+        }
+
         public Task<bool> RemoveProductAsync(Product p)
         {
             throw new NotImplementedException();

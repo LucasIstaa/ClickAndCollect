@@ -42,8 +42,13 @@ namespace ClickAndCollect.Models
 
         public async static Task<List<Product>> GetAllProducts(IProductDAL dal) 
         {
-            List<Product> products = await dal.GetAllProductsAsync();
-            return products;
+            return await dal.GetAllProductsAsync();
+            
+        }
+
+        public async static Task<List<Product>> GetProductsByCategory(IProductDAL dal, int? categoryid)
+        {
+            return await dal.GetProductsByCategoryAsync(categoryid);
         }
     }
 }

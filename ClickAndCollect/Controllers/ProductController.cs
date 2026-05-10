@@ -7,17 +7,32 @@ namespace ClickAndCollect.Controllers
     public class ProductController : Controller
     {
         private readonly IProductDAL productDAL;
+        private readonly ICategoryDAL categoryDAL;
 
-        public ProductController(IProductDAL dal) 
+        public ProductController(IProductDAL prodal, ICategoryDAL catdal) 
         {
-            this.productDAL = dal;
+            this.productDAL = prodal;
+            this.categoryDAL = catdal;
         }
 
-        public async Task<IActionResult> GetAllProducts() 
+        public async Task<IActionResult> Browse(int? categoryid) 
         {
-            List<Product> products = await Product.GetAllProducts(productDAL);
+            List<Product> products = new List<Product>();
+
+            if (categoryid.HasValue)
+            {
+                products = await Product.GetProductsByCategory(productDAL, categoryid);
+            }
+            else 
+            {
+                products = await Product.GetAllProducts(productDAL);
+            }
+
+            ViewBag.Categories = await Category.GetAllCategories(categoryDAL);
+
             return View("DisplayProducts",products);
         }
+
 
         public IActionResult Index()
         {
