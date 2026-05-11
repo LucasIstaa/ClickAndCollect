@@ -8,6 +8,7 @@
            public Task<bool> RemoveProductAsync(Product p);
            public Task<Product> GetProductAsync(int id);
            public Task<List<Product>> GetAllProductsAsync();
-        
+
+           public Task<List<Product>> GetProductsByCategoryAsync(int? categoryid);
     }
 }
