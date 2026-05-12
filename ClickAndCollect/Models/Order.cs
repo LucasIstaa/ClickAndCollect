@@ -7,6 +7,7 @@ namespace ClickAndCollect.Models
         private int orderid;
         private OrderStatus status;
         private int boxesInvolved;
+        private DateOnly fetchdate;
         private Client client;
         private List<OrderLine> orderlines = new List<OrderLine>();
         private Store store;
@@ -22,6 +23,12 @@ namespace ClickAndCollect.Models
         {
             get { return status; }
             set { status = value; }
+        }
+
+        public DateOnly Fetchdate 
+        {
+            get { return fetchdate; }
+            set { fetchdate = value; }
         }
 
         public Store Store
