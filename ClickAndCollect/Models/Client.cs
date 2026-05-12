@@ -9,6 +9,8 @@
         private string cityname;
         private string streetname;
         private int housenumber;
+        private List<Order> orders;
+
 
         public string Firstname
         {
@@ -45,5 +47,43 @@
             get { return housenumber; }
             set { housenumber = value; }
         }
+
+        public void AddOrder(Order o) 
+        {
+            if (!this.orders.Contains(o))
+            {
+                this.orders.Add(o);
+            }
+        }
+
+
+        public Client(string username, string password, string firstname,string lastname, string phonenumber,
+            int postalcode, string cityname, string streetname, int houseumber) : base(username, password)
+        { 
+            this.Firstname = firstname;
+            this.Lastname = lastname;
+            this.Phonenumber = phonenumber;
+            this.Postalcode = postalcode;
+            this.CityName = cityname;
+            this.StreetName = streetname;
+            this.HouseNumber = houseumber;
+            this.orders = new List<Order>();
+        }
+
+        public Client(int userid,string username, string password, string firstname, string lastname, string phonenumber,
+           int postalcode, string cityname, string streetname, int houseumber) : base(userid,username, password)
+        {
+            this.Firstname = firstname;
+            this.Lastname = lastname;
+            this.Phonenumber = phonenumber;
+            this.Postalcode = postalcode;
+            this.CityName = cityname;
+            this.StreetName = streetname;
+            this.HouseNumber = houseumber;
+            this.orders = new List<Order>();
+        }
+
+
+
     }
 }

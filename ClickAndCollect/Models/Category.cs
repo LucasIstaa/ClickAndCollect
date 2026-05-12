@@ -6,6 +6,7 @@ namespace ClickAndCollect.Models
     {
         private int id;
         private String name;
+        private List<Product> products;
 
         public int Id
         {
@@ -19,11 +20,20 @@ namespace ClickAndCollect.Models
             set { name = value; }
         }
 
+        public void AddProduct(Product pro) 
+        {
+            if (!products.Contains(pro)) 
+            {
+                products.Add(pro);
+            }
+        }
+
         public Category() { }
 
         public Category(string name)
         {
             this.Name = name;
+            products = new List<Product>();
         }
         public Category(int id, String name) : this(name)
         {
