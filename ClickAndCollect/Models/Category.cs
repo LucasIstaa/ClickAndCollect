@@ -40,9 +40,16 @@ namespace ClickAndCollect.Models
             this.Id = id;
         }
 
+        //Méthodes
+
         public async static Task<List<Category>> GetAllCategories(ICategoryDAL dal) 
         {
             return await dal.GetAllCategoriesAsync();
+        }
+
+        public async static Task<Category> GetCategory(int id, ICategoryDAL dal) 
+        {
+            return await dal.GetCategoryAsync(id);
         }
         
     }

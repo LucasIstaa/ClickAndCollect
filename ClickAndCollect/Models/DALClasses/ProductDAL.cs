@@ -24,7 +24,7 @@ namespace ClickAndCollect.Models.DALClasses
 
             using (SqlConnection connection = new SqlConnection(connectionString)) 
             {
-                SqlCommand cmd = new SqlCommand("SELECT * FROM dbo.Product", connection);
+                SqlCommand cmd = new SqlCommand("SELECT p.ProductId,p.name AS pname,p.price,p.CategoryId,c.name FROM dbo.Product p JOIN dbo.Category c ON p.CategoryId=c.CategoryId", connection);
                 await connection.OpenAsync();
 
                 using (SqlDataReader reader = await cmd.ExecuteReaderAsync()) 
@@ -32,9 +32,11 @@ namespace ClickAndCollect.Models.DALClasses
                     while (await reader.ReadAsync()) 
                     {
                         int id = reader.GetInt32(reader.GetOrdinal("ProductId"));
-                        String name = reader.GetString(reader.GetOrdinal("name"));
+                        String name = reader.GetString(reader.GetOrdinal("pname"));
                         decimal price = reader.GetDecimal(reader.GetOrdinal("price"));
-                        Product p = new Product(id,name,price);
+                        int catid = reader.GetInt32(reader.GetOrdinal("CategoryId"));
+                        string cname = reader.GetString(reader.GetOrdinal("name")); 
+                        Product p = new Product(id,name,price, new Category(catid,cname));
                         products.Add(p);
                     }
                 }
@@ -54,8 +56,9 @@ namespace ClickAndCollect.Models.DALClasses
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                SqlCommand cmd = new SqlCommand("SELECT * FROM dbo.Product WHERE CategoryId = @categoryid", connection);
-                cmd.Parameters.AddWithValue("categoryid", categoryid);
+                SqlCommand cmd = new SqlCommand("SELECT p.ProductId,p.name AS pname,p.price,p.CategoryId,c.name FROM dbo.Product p JOIN dbo.Category c ON p.CategoryId=c.CategoryId WHERE " +
+                    "p.CategoryId = @catid", connection);
+                cmd.Parameters.AddWithValue("catid", categoryid);
 
                 await connection.OpenAsync();
 
@@ -64,9 +67,11 @@ namespace ClickAndCollect.Models.DALClasses
                     while (await reader.ReadAsync())
                     {
                         int id = reader.GetInt32(reader.GetOrdinal("ProductId"));
-                        String name = reader.GetString(reader.GetOrdinal("name"));
+                        String name = reader.GetString(reader.GetOrdinal("pname"));
                         decimal price = reader.GetDecimal(reader.GetOrdinal("price"));
-                        Product p = new Product(id, name, price);
+                        int catid = reader.GetInt32(reader.GetOrdinal("CategoryId"));
+                        string cname = reader.GetString(reader.GetOrdinal("name"));
+                        Product p = new Product(id, name, price, new Category(catid, cname));
                         products.Add(p);
                     }
                 }
