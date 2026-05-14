@@ -1,0 +1,46 @@
+﻿@model List<ClickAndCollect.Models.Order>
+@{
+    ViewData["Title"] = "Today's Client List";
+}
+
+<h2>Today's Client List</h2>
+
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-info">@ViewBag.Message</div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Order #</th>
+                <th>Client</th>
+                <th>Pickup Time</th>
+                <th>Boxes</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model)
+            {
+                <tr>
+                    <td>@order.OrderId</td>
+                    <td>@order.ClientFullName</td>
+                    <td>@order.PickupTime.ToString("HH:mm")</td>
+                    <td>@order.Boxes</td>
+                    <td>@order.Status</td>
+                    <td>
+                        <form method="post" asp-controller="Cashier" asp-action="FinalizeOrder">
+                            <input type="hidden" name="orderId" value="@order.OrderId" />
+                            <button type="submit" class="btn btn-sm btn-success">Finalize</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Home</a>

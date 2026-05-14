@@ -55,6 +55,14 @@ namespace ClickAndCollect.Controllers
             HttpContext.Session.SetInt32("UserId", user.UserId);
             HttpContext.Session.SetString("Role", role);
             HttpContext.Session.SetString("Username", user.Username);
+            if (user is Cashier cashier)
+            {
+                HttpContext.Session.SetInt32("StoreId", cashier.Store.StoreId);
+            }
+            else if (user is OrderMaker maker)
+            {
+                HttpContext.Session.SetInt32("StoreId", maker.Store.StoreId);
+            }
 
             return role switch
             {
