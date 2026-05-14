@@ -120,6 +120,17 @@ namespace ClickAndCollect.Models
             AddTimeslot(new Timeslot(start, end, this));
         }
 
+        public Store(int storeid, string phonenumber, string name, int postalcode, string cityname, string streetname, int housenumber)
+        {
+            StoreId = storeid;
+            PhoneNumber = phonenumber;
+            Name = name;
+            PostalCode = postalcode;
+            CityName = cityname;
+            StreetName = streetname;
+            HouseNumber = housenumber;
+        }
+
         public Store(int storeid, string phonenumber, string name, int postalcode, string cityname, string streetname, int housenumber, TimeOnly start, TimeOnly end)
         : this(phonenumber, name, postalcode, cityname, streetname, housenumber,start,end)
         {

@@ -1,0 +1,63 @@
+﻿@{
+    ViewData["Title"] = "Register";
+}
+
+<h2>Create account</h2>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">@ViewBag.Error</div>
+}
+
+@if (ViewBag.Errors != null)
+{
+    <div class="alert alert-danger">
+        <ul>
+            @foreach (var error in ViewBag.Errors)
+            {
+                <li>@error</li>
+            }
+        </ul>
+    </div>
+}
+
+<form method="post" asp-controller="Account" asp-action="Register">
+    <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <input type="text" class="form-control" id="username" name="username" required />
+    </div>
+    <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" class="form-control" id="password" name="password" required />
+    </div>
+    <div class="mb-3">
+        <label for="firstname" class="form-label">First name</label>
+        <input type="text" class="form-control" id="firstname" name="firstname" required />
+    </div>
+    <div class="mb-3">
+        <label for="lastname" class="form-label">Last name</label>
+        <input type="text" class="form-control" id="lastname" name="lastname" required />
+    </div>
+    <div class="mb-3">
+        <label for="phonenumber" class="form-label">Phone number</label>
+        <input type="text" class="form-control" id="phonenumber" name="phonenumber" required />
+    </div>
+    <div class="mb-3">
+        <label for="postalcode" class="form-label">Postal code</label>
+        <input type="number" class="form-control" id="postalcode" name="postalcode" required />
+    </div>
+    <div class="mb-3">
+        <label for="cityname" class="form-label">City</label>
+        <input type="text" class="form-control" id="cityname" name="cityname" required />
+    </div>
+    <div class="mb-3">
+        <label for="streetname" class="form-label">Street</label>
+        <input type="text" class="form-control" id="streetname" name="streetname" required />
+    </div>
+    <div class="mb-3">
+        <label for="housenumber" class="form-label">House number</label>
+        <input type="number" class="form-control" id="housenumber" name="housenumber" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Create account</button>
+    <a asp-controller="Account" asp-action="Login" class="btn btn-link">Already have an account? Login</a>
+</form>

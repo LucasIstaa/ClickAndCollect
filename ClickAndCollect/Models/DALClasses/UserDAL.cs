@@ -55,7 +55,12 @@ namespace ClickAndCollect.Models.DALClasses
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 SqlCommand cmd = new SqlCommand(
-                    "SELECT * FROM dbo.User_ WHERE UserId = @userId",
+                    @"SELECT u.*, s.StoreId AS SId, s.phonenumber AS SPhone, s.name AS SName, 
+              s.postalcode AS SPostal, s.cityname AS SCity, 
+              s.streetname AS SStreet, s.housenumber AS SHouse
+              FROM dbo.User_ u
+              LEFT JOIN dbo.Store s ON u.StoreId = s.StoreId
+              WHERE u.UserId = @userId",
                     connection);
 
                 cmd.Parameters.AddWithValue("@userId", userId);
@@ -73,43 +78,74 @@ namespace ClickAndCollect.Models.DALClasses
                         switch (role)
                         {
                             case "Client":
-                                user = new Client
-                                {
-                                    UserId = id,
-                                    Username = uname,
-                                    Password = pwd,
-                                    Firstname = reader.GetString(reader.GetOrdinal("firstname")),
-                                    Lastname = reader.GetString(reader.GetOrdinal("lastname")),
-                                    Phonenumber = reader.GetString(reader.GetOrdinal("phonenumber")),
-                                    Postalcode = reader.GetInt32(reader.GetOrdinal("postalcode")),
-                                    CityName = reader.GetString(reader.GetOrdinal("Cityname")),
-                                    StreetName = reader.GetString(reader.GetOrdinal("streetname")),
-                                    HouseNumber = reader.GetInt32(reader.GetOrdinal("housenumber"))
-                                };
+                                user = new Client(
+                                    id, uname, pwd,
+                                    reader.GetString(reader.GetOrdinal("firstname")),
+                                    reader.GetString(reader.GetOrdinal("lastname")),
+                                    reader.GetString(reader.GetOrdinal("phonenumber")),
+                                    reader.GetInt32(reader.GetOrdinal("postalcode")),
+                                    reader.GetString(reader.GetOrdinal("Cityname")),
+                                    reader.GetString(reader.GetOrdinal("streetname")),
+                                    reader.GetInt32(reader.GetOrdinal("housenumber"))
+                                );
                                 break;
                             case "Cashier":
-                                user = new Cashier
-                                {
-                                    UserId = id,
-                                    Username = uname,
-                                    Password = pwd,
-                                    StoreId = reader.GetInt32(reader.GetOrdinal("StoreId"))
-                                };
+                                Store cashierStore = new Store(
+                                    reader.GetInt32(reader.GetOrdinal("SId")),
+                                    reader.GetString(reader.GetOrdinal("SPhone")),
+                                    reader.GetString(reader.GetOrdinal("SName")),
+                                    reader.GetInt32(reader.GetOrdinal("SPostal")),
+                                    reader.GetString(reader.GetOrdinal("SCity")),
+                                    reader.GetString(reader.GetOrdinal("SStreet")),
+                                    reader.GetInt32(reader.GetOrdinal("SHouse"))
+                                );
+                                user = new Cashier(id, uname, pwd, cashierStore);
                                 break;
                             case "OrderMaker":
-                                user = new OrderMaker
-                                {
-                                    UserId = id,
-                                    Username = uname,
-                                    Password = pwd,
-                                    StoreId = reader.GetInt32(reader.GetOrdinal("StoreId"))
-                                };
+                                Store makerStore = new Store(
+                                    reader.GetInt32(reader.GetOrdinal("SId")),
+                                    reader.GetString(reader.GetOrdinal("SPhone")),
+                                    reader.GetString(reader.GetOrdinal("SName")),
+                                    reader.GetInt32(reader.GetOrdinal("SPostal")),
+                                    reader.GetString(reader.GetOrdinal("SCity")),
+                                    reader.GetString(reader.GetOrdinal("SStreet")),
+                                    reader.GetInt32(reader.GetOrdinal("SHouse"))
+                                );
+                                user = new OrderMaker(id, uname, pwd, makerStore);
                                 break;
                         }
                     }
                 }
             }
             return user;
+        }
+
+        public async Task<bool> CreateAccountAsync(Client client)
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand cmd = new SqlCommand(
+                    @"INSERT INTO dbo.User_ (username, password, firstname, lastname, phonenumber, 
+              postalcode, Cityname, streetname, housenumber, role)
+              VALUES (@username, @password, @firstname, @lastname, @phonenumber, 
+              @postalcode, @cityname, @streetname, @housenumber, 'Client')",
+                    connection);
+
+                cmd.Parameters.AddWithValue("@username", client.Username);
+                cmd.Parameters.AddWithValue("@password", client.Password);
+                cmd.Parameters.AddWithValue("@firstname", client.Firstname);
+                cmd.Parameters.AddWithValue("@lastname", client.Lastname);
+                cmd.Parameters.AddWithValue("@phonenumber", client.Phonenumber);
+                cmd.Parameters.AddWithValue("@postalcode", client.Postalcode);
+                cmd.Parameters.AddWithValue("@cityname", client.CityName);
+                cmd.Parameters.AddWithValue("@streetname", client.StreetName);
+                cmd.Parameters.AddWithValue("@housenumber", client.HouseNumber);
+
+                await connection.OpenAsync();
+
+                int result = await cmd.ExecuteNonQueryAsync();
+                return result > 0;
+            }
         }
     }
 }
