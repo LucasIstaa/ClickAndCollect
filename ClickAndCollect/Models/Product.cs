@@ -7,6 +7,8 @@ namespace ClickAndCollect.Models
         private int productid;
         private string name;
         private decimal price;
+        private List<OrderLine> orderlines;
+        private Category category;
 
         public int ProductId
         {
@@ -26,15 +28,31 @@ namespace ClickAndCollect.Models
             set { price = value; }
         }
 
-        public Product() { }
-
-        public Product(String name, decimal price) 
+        public Category Category
         {
-            this.Name = name;
-            this.Price = price; 
+            get { return category; }
+            set { category = value; }
         }
 
-        public Product(int id,String name, decimal price) : this(name,price)
+        public void AddOrderline(OrderLine line) 
+        {
+            if (!this.orderlines.Contains(line)) 
+            {
+                this.orderlines.Add(line);
+            }
+        }
+
+        public Product() { }
+
+        public Product(String name, decimal price, Category cat) 
+        {
+            this.Name = name;
+            this.Price = price;
+            this.orderlines = new List<OrderLine>();
+            this.Category = cat;
+        }
+
+        public Product(int id,String name, decimal price,Category cat) : this(name,price,cat)
         {
             this.ProductId = id;
         }
@@ -49,6 +67,17 @@ namespace ClickAndCollect.Models
         public async static Task<List<Product>> GetProductsByCategory(IProductDAL dal, int? categoryid)
         {
             return await dal.GetProductsByCategoryAsync(categoryid);
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is Product product &&
+                   ProductId == product.ProductId;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(ProductId);
         }
     }
 }

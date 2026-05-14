@@ -40,9 +40,25 @@ namespace ClickAndCollect.Models.DALClasses
             return categories;
         }
 
-        public Task<Category> GetCategoryAsync(int id)
+        public async Task<Category> GetCategoryAsync(int id)
         {
-            throw new NotImplementedException();
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("SELECT * FROM dbo.Category WHERE CategoryId=@catid", conn);
+                cmd.Parameters.AddWithValue("catid", id);
+                await conn.OpenAsync();
+
+                using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                {
+                    if(await reader.ReadAsync())
+                    {
+                        String name = reader.GetString(reader.GetOrdinal("name"));
+                        return new Category(id, name);
+                    }
+
+                    return null;
+                }
+            }
         }
 
         public Task<bool> RemoveCategoryAsync(Category c)

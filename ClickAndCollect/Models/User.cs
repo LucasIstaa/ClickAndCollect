@@ -1,4 +1,5 @@
 ﻿using ClickAndCollect.Models.DALInterfaces;
+using System.Data;
 
 namespace ClickAndCollect.Models
 {
@@ -25,6 +26,18 @@ namespace ClickAndCollect.Models
             get { return password; }
             set { password = value; }
         }
+
+        protected User(string username, string password)
+        {
+            Username = username;
+            Password = password;
+        }
+
+        protected User(int userId, string username, string password) : this(username, password) 
+        {
+            UserId = userId;
+        }
+
 
         public static async Task<int?> GetByUsername(string username, IUserDAL dal)
         {
