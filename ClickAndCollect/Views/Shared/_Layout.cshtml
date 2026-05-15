@@ -22,15 +22,24 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li>
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Browse">Browse products</a>
-                        </li>
-                        <li>
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Log in</a>
-                        </li>
+                        @if (Context.Session.GetString("Role") == "Client" || Context.Session.GetString("Role") == null)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Browse">Browse products</a>
+                            </li>
+                        }
+                        @if (Context.Session.GetString("Role") == "Cashier")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Cashier" asp-action="ConsultTodayClientList">Today's Client List</a>
+                            </li>
+                        }
+                        @if (Context.Session.GetString("Role") == "OrderMaker")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="OrderMaker" asp-action="Index">Tomorrow's Orders</a>
+                            </li>
+                        }
                     </ul>
                     <ul class="navbar-nav">
                         @if (Context.Session.GetString("Username") != null)

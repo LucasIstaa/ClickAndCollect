@@ -12,10 +12,10 @@ namespace ClickAndCollect.Models
         private string cityname;
         private string streetname;
         private int housenumber;
-        private List<Order> orders;
-        private List<Timeslot> timeslots;
-        private List<OrderMaker> ordermakers;
-        private List<Cashier> cashiers;
+        private List<Order> orders = new List<Order>();
+        private List<Timeslot> timeslots = new List<Timeslot>();
+        private List<OrderMaker> ordermakers = new List<OrderMaker>();
+        private List<Cashier> cashiers = new List<Cashier>();
 
         public int StoreId
         {
@@ -83,7 +83,7 @@ namespace ClickAndCollect.Models
             }
         }
 
-        public void AddOrdermaker(OrderMaker maker) 
+        public void AddOrdermaker(OrderMaker maker)
         {
             if (!ordermakers.Contains(maker))
             {

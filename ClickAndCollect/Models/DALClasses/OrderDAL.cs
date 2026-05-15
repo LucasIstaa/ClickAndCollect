@@ -1,4 +1,5 @@
 ﻿using ClickAndCollect.Models.DALInterfaces;
+using ClickAndCollect.Models.Enumerations;
 using Microsoft.Data.SqlClient;
 
 namespace ClickAndCollect.Models.DALClasses
@@ -19,16 +20,21 @@ namespace ClickAndCollect.Models.DALClasses
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 SqlCommand cmd = new SqlCommand(
-                    @"SELECT o.OrderId, o.status, o.boxes, o.UserId,
-                      u.firstname + ' ' + u.lastname AS ClientFullName,
-                      t.start_ AS PickupTime
-                      FROM dbo.Order_ o
-                      INNER JOIN dbo.User_ u ON o.UserId = u.UserId
-                      INNER JOIN dbo.Timeslot t ON o.TimeslotId = t.TimeslotId
-                      WHERE o.StoreId = @storeId 
-                      AND CAST(t.start_ AS DATE) = CAST(GETDATE() AS DATE)
-                      AND o.status != 'Finalized'
-                      ORDER BY t.start_",
+                    @"SELECT o.OrderId, o.status, o.boxes,
+              u.UserId, u.username, u.password, u.firstname, u.lastname, 
+              u.phonenumber, u.postalcode, u.Cityname, u.streetname, u.housenumber,
+              t.TimeslotId, t.start_, t.end_,
+              s.StoreId, s.phonenumber AS SPhone, s.name AS SName, 
+              s.postalcode AS SPostal, s.cityname AS SCity, 
+              s.streetname AS SStreet, s.housenumber AS SHouse
+              FROM dbo.Order_ o
+              INNER JOIN dbo.User_ u ON o.UserId = u.UserId
+              INNER JOIN dbo.Timeslot t ON o.TimeslotId = t.TimeslotId
+              INNER JOIN dbo.Store s ON o.StoreId = s.StoreId
+              WHERE o.StoreId = @storeId 
+              AND CAST(t.start_ AS DATE) = CAST(GETDATE() AS DATE)
+              AND o.status != 'Finalized'
+              ORDER BY t.start_",
                     connection);
 
                 cmd.Parameters.AddWithValue("@storeId", storeId);
@@ -38,15 +44,49 @@ namespace ClickAndCollect.Models.DALClasses
                 {
                     while (await reader.ReadAsync())
                     {
-                        Order o = new Order(
-                            reader.GetInt32(reader.GetOrdinal("OrderId")),
-                            reader.GetString(reader.GetOrdinal("status")),
-                            reader.GetInt32(reader.GetOrdinal("boxes")),
-                            reader.GetInt32(reader.GetOrdinal("UserId")),
-                            reader.GetString(reader.GetOrdinal("ClientFullName")),
-                            reader.GetDateTime(reader.GetOrdinal("PickupTime"))
+                        Store store = new Store(
+                            reader.GetInt32(reader.GetOrdinal("StoreId")),
+                            reader.GetString(reader.GetOrdinal("SPhone")),
+                            reader.GetString(reader.GetOrdinal("SName")),
+                            reader.GetInt32(reader.GetOrdinal("SPostal")),
+                            reader.GetString(reader.GetOrdinal("SCity")),
+                            reader.GetString(reader.GetOrdinal("SStreet")),
+                            reader.GetInt32(reader.GetOrdinal("SHouse"))
                         );
-                        orders.Add(o);
+
+                        Client client = new Client(
+                            reader.GetInt32(reader.GetOrdinal("UserId")),
+                            reader.GetString(reader.GetOrdinal("username")),
+                            reader.GetString(reader.GetOrdinal("password")),
+                            reader.GetString(reader.GetOrdinal("firstname")),
+                            reader.GetString(reader.GetOrdinal("lastname")),
+                            reader.GetString(reader.GetOrdinal("phonenumber")),
+                            reader.GetInt32(reader.GetOrdinal("postalcode")),
+                            reader.GetString(reader.GetOrdinal("Cityname")),
+                            reader.GetString(reader.GetOrdinal("streetname")),
+                            reader.GetInt32(reader.GetOrdinal("housenumber"))
+                        );
+
+                        Timeslot timeslot = new Timeslot(
+                            reader.GetInt32(reader.GetOrdinal("TimeslotId")),
+                            TimeOnly.FromDateTime(reader.GetDateTime(reader.GetOrdinal("start_"))),
+                            TimeOnly.FromDateTime(reader.GetDateTime(reader.GetOrdinal("end_"))),
+                            store
+                        );
+
+                        string statusStr = reader.GetString(reader.GetOrdinal("status"));
+                        OrderStatus orderStatus = Enum.Parse<OrderStatus>(statusStr);
+
+                        Order order = new Order(
+                            reader.GetInt32(reader.GetOrdinal("OrderId")),
+                            orderStatus,
+                            reader.GetInt32(reader.GetOrdinal("boxes")),
+                            client,
+                            store,
+                            timeslot
+                        );
+
+                        orders.Add(order);
                     }
                 }
             }

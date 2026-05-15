@@ -27,9 +27,9 @@ else
             {
                 <tr>
                     <td>@order.OrderId</td>
-                    <td>@order.ClientFullName</td>
-                    <td>@order.PickupTime.ToString("HH:mm")</td>
-                    <td>@order.Boxes</td>
+                    <td>@order.Client.Firstname @order.Client.Lastname</td>
+                    <td>@order.Timeslot.Start.ToString("HH:mm") - @order.Timeslot.End.ToString("HH:mm")</td>
+                    <td>@order.BoxesInvolved</td>
                     <td>@order.Status</td>
                     <td>
                         <form method="post" asp-controller="Cashier" asp-action="FinalizeOrder">

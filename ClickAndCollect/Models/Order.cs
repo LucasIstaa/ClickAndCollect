@@ -81,6 +81,16 @@ namespace ClickAndCollect.Models
             Timeslot = slot;
         }
 
+        public Order(int orderid, OrderStatus status, int boxesInvolved, Client client, Store store, Timeslot slot)
+        {
+            this.OrderId = orderid;
+            this.Status = status;
+            this.BoxesInvolved = boxesInvolved;
+            this.Client = client;
+            this.Store = store;
+            this.Timeslot = slot;
+        }
+
         public Order(int orderid,OrderStatus status, int boxesInvolved, Client client, Product product, int quantity, Store store, Timeslot slot) : this(status,boxesInvolved,client,product,quantity, store, slot)
         {
             this.OrderId = orderid;

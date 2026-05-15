@@ -15,6 +15,17 @@ namespace ClickAndCollect.Controllers
 
         public IActionResult Login()
         {
+            string? role = HttpContext.Session.GetString("Role");
+            if (role != null)
+            {
+                return role switch
+                {
+                    "Cashier" => RedirectToAction("ConsultTodayClientList", "Cashier"),
+                    "OrderMaker" => RedirectToAction("Index", "OrderMaker"),
+                    "Client" => RedirectToAction("Browse", "Product"),
+                    _ => View()
+                };
+            }
             return View();
         }
 
@@ -26,6 +37,11 @@ namespace ClickAndCollect.Controllers
 
         public IActionResult Register()
         {
+            string? role = HttpContext.Session.GetString("Role");
+            if (role != null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             return View();
         }
 
@@ -66,8 +82,8 @@ namespace ClickAndCollect.Controllers
 
             return role switch
             {
-                "Client" => RedirectToAction("GetAllProducts", "Product"),
-                "Cashier" => RedirectToAction("Index", "Cashier"),
+                "Client" => RedirectToAction("Browse", "Product"),
+                "Cashier" => RedirectToAction("ConsultTodayClientList", "Cashier"),
                 "OrderMaker" => RedirectToAction("Index", "OrderMaker"),
                 _ => RedirectToAction("Login")
             };

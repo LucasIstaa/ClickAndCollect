@@ -1,9 +1,11 @@
-﻿using ClickAndCollect.Models;
+﻿using ClickAndCollect.Filters;
+using ClickAndCollect.Models;
 using ClickAndCollect.Models.DALInterfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClickAndCollect.Controllers
 {
+    [RoleFilter("Cashier")]
     public class CashierController : Controller
     {
         private readonly IOrderDAL orderDAL;
@@ -45,6 +47,12 @@ namespace ClickAndCollect.Controllers
         [HttpPost]
         public async Task<IActionResult> FinalizeOrder(int orderId)
         {
+            string? role = HttpContext.Session.GetString("Role");
+            if (role != "Cashier")
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             bool success = await orderDAL.FinalizeOrderAsync(orderId);
             return RedirectToAction("ConsultTodayClientList");
         }

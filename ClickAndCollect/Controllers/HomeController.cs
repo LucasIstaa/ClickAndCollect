@@ -15,6 +15,16 @@ namespace ClickAndCollect.Controllers
 
         public IActionResult Index()
         {
+            string? role = HttpContext.Session.GetString("Role");
+            if (role == "Cashier")
+            {
+                return RedirectToAction("ConsultTodayClientList", "Cashier");
+            }
+            if (role == "OrderMaker")
+            {
+                return RedirectToAction("Index", "OrderMaker");
+            }
+
             return View();
         }
 
