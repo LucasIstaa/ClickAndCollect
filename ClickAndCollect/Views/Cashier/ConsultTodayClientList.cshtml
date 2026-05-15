@@ -32,10 +32,14 @@ else
                     <td>@order.BoxesInvolved</td>
                     <td>@order.Status</td>
                     <td>
-                        <form method="post" asp-controller="Cashier" asp-action="FinalizeOrder">
-                            <input type="hidden" name="orderId" value="@order.OrderId" />
-                            <button type="submit" class="btn btn-sm btn-success">Finalize</button>
-                        </form>
+                        @if (order.Status == ClickAndCollect.Models.Enumerations.OrderStatus.Prepared)
+                        {
+                            <a asp-controller="Cashier" asp-action="FinalizeOrder" asp-route-orderId="@order.OrderId" class="btn btn-sm btn-success">Finalize</a>
+                        }
+                        else
+                        {
+                            <span class="text-muted">Waiting for preparation</span>
+                        }
                     </td>
                 </tr>
             }

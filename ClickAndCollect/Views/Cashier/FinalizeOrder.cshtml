@@ -1,0 +1,52 @@
+﻿@model ClickAndCollect.Models.Order
+@{
+    ViewData["Title"] = "Finalize Order";
+}
+
+<h2>Finalize Order #@Model.OrderId</h2>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">Order Information</h5>
+        <p><strong>Client:</strong> @Model.Client.Firstname @Model.Client.Lastname</p>
+        <p><strong>Pickup time:</strong> @Model.Timeslot.Start.ToString("HH:mm") - @Model.Timeslot.End.ToString("HH:mm")</p>
+        <p><strong>Boxes used:</strong> @Model.BoxesInvolved</p>
+        <p><strong>Status:</strong> @Model.Status</p>
+    </div>
+</div>
+
+@if (ViewBag.Step == "EnterBoxes")
+{
+    <form method="post" asp-controller="Cashier" asp-action="SubmitBoxes">
+        <input type="hidden" name="orderId" value="@Model.OrderId" />
+        <div class="mb-3">
+            <label for="boxesReturned" class="form-label">Boxes returned by client</label>
+            <input type="number" class="form-control" id="boxesReturned" name="boxesReturned" value="0" min="0" />
+        </div>
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">Submit boxes number</button>
+            <a asp-controller="Cashier" asp-action="ConsultTodayClientList" class="btn btn-secondary">Back to today's orders list</a>
+        </div>
+    </form>
+}
+else if (ViewBag.Step == "ShowPrice")
+{
+    <div class="alert alert-info">
+        <h4>Final price: @ViewBag.FinalPrice.ToString("0.00") €</h4>
+    </div>
+    <form method="post" asp-controller="Cashier" asp-action="ConfirmPayment">
+        <input type="hidden" name="orderId" value="@Model.OrderId" />
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-success">Confirm payment</button>
+            <a asp-controller="Cashier" asp-action="ConsultTodayClientList" class="btn btn-secondary">Back to today's orders list</a>
+        </div>
+    </form>
+}
+else if (ViewBag.Step == "Finalized")
+{
+    <div class="alert alert-success">
+        <h4>Order finalized!</h4>
+        <p>Payment confirmed. The order has been completed.</p>
+    </div>
+    <a asp-controller="Cashier" asp-action="ConsultTodayClientList" class="btn btn-primary">Back to client list</a>
+}
