@@ -27,8 +27,20 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/App-code/ClickAndCollect/ClickAndCollect/ClickAndCollect/Views/Account/Register.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZWdpc3Rlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/App-code/ClickAndCollect/ClickAndCollect/ClickAndCollect/Views/Cart/ManageCart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FydFxNYW5hZ2VDYXJ0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/App-code/ClickAndCollect/ClickAndCollect/ClickAndCollect/Views/Cashier/ConsultTodayClientList.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FzaGllclxDb25zdWx0VG9kYXlDbGllbnRMaXN0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/App-code/ClickAndCollect/ClickAndCollect/ClickAndCollect/Views/Cashier/FinalizeOrder.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FzaGllclxGaW5hbGl6ZU9yZGVyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/App-code/ClickAndCollect/ClickAndCollect/ClickAndCollect/Views/Home/Index.cshtml]

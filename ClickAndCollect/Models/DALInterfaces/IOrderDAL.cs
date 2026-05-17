@@ -1,3 +1,4 @@
+
 ﻿using ClickAndCollect.Models.Classes;
 
 public interface IOrderDAL
@@ -9,4 +10,9 @@ public interface IOrderDAL
     Task<List<Order>> GetClientOrdersAsync(int id);
     Task<List<OrderLine>> GetOrderlinesAsync(int id);
     Task<Order> GetOrderAsync(int id);
+    Task<List<Order>> GetTodayOrdersByStoreAsync(int storeId);
+    Task<bool> FinalizeOrderAsync(int orderId);
+    Task<Order?> GetOrderByIdAsync(int orderId);
+    Task<bool> SetBoxesReturnedAsync(int orderId, int nbBoxes);
+    Task<decimal> CalculateFinalPriceAsync(int orderId, int boxesReturned);
 }

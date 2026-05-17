@@ -12,10 +12,10 @@ namespace ClickAndCollect.Models.Classes
         private string cityname;
         private string streetname;
         private int housenumber;
-        private List<Order> orders;
-        private List<Timeslot> timeslots;
-        private List<OrderMaker> ordermakers;
-        private List<Cashier> cashiers;
+        private List<Order> orders = new List<Order>();
+        private List<Timeslot> timeslots = new List<Timeslot>();
+        private List<OrderMaker> ordermakers = new List<OrderMaker>();
+        private List<Cashier> cashiers = new List<Cashier>();
 
         public int StoreId
         {
@@ -83,7 +83,7 @@ namespace ClickAndCollect.Models.Classes
             }
         }
 
-        public void AddOrdermaker(OrderMaker maker) 
+        public void AddOrdermaker(OrderMaker maker)
         {
             if (!ordermakers.Contains(maker))
             {
@@ -118,6 +118,17 @@ namespace ClickAndCollect.Models.Classes
             StreetName = streetname;
             HouseNumber = housenumber;
             AddTimeslot(new Timeslot(start, end, this));
+        }
+
+        public Store(int storeid, string phonenumber, string name, int postalcode, string cityname, string streetname, int housenumber)
+        {
+            StoreId = storeid;
+            PhoneNumber = phonenumber;
+            Name = name;
+            PostalCode = postalcode;
+            CityName = cityname;
+            StreetName = streetname;
+            HouseNumber = housenumber;
         }
 
         public Store(int storeid, string phonenumber, string name, int postalcode, string cityname, string streetname, int housenumber, TimeOnly start, TimeOnly end)

@@ -64,5 +64,12 @@ namespace ClickAndCollect.Models.Classes
                 _ => "Unknown"
             };
         }
+
+        public static async Task<bool> CreateAccount(string username, string password, string firstname, string lastname, string phonenumber, int postalcode, string cityname, string streetname, int housenumber, IUserDAL dal)
+        {
+            Client c = new Client(username, password, firstname, lastname, phonenumber, postalcode, cityname, streetname, housenumber);
+            bool saved = await dal.CreateAccountAsync(c);
+            return saved;
+        }
     }
 }

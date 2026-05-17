@@ -41,11 +41,11 @@ app.UseSession();
 app.UseAuthorization();
 
 app.MapControllerRoute(
-    name: "other",
-    pattern: "{controller=Product}/{action=GetAllProducts}");
-
-app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}");
+
+app.MapControllerRoute(
+    name: "other",
+    pattern: "{controller=Product}/{action=GetAllProducts}");
 
 app.Run();
