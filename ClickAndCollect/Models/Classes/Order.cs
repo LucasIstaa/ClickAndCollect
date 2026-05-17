@@ -1,6 +1,6 @@
-﻿using ClickAndCollect.Models.Enumerations;
+﻿
 
-namespace ClickAndCollect.Models
+namespace ClickAndCollect.Models.Classes
 {
     public class Order
     {
@@ -55,6 +55,12 @@ namespace ClickAndCollect.Models
             set { timeslot = value; }
         }
 
+        public List<OrderLine> Orderlines 
+        {
+            get { return orderlines; }
+            set { orderlines = value; }
+        }
+
         public void AddOrderLine(OrderLine line) 
         {
             if (!orderlines.Contains(line)) 
@@ -63,7 +69,7 @@ namespace ClickAndCollect.Models
             }
         }
 
-        public Order(OrderStatus status, int boxesInvolved, Client client, Product product, int quantity, Store store, Timeslot slot)
+        public Order(OrderStatus status, int boxesInvolved, Client client, Product product, int quantity, Store store, Timeslot slot,DateOnly fetchdate)
         {
             Status = status;
             BoxesInvolved = boxesInvolved;
@@ -72,6 +78,7 @@ namespace ClickAndCollect.Models
             AddOrderLine(new OrderLine(quantity,product,this));
             Store = store;
             store.AddOrder(this);
+            Fetchdate = fetchdate;
 
             if (!slot.AddOrder(this)) 
             {
@@ -81,9 +88,35 @@ namespace ClickAndCollect.Models
             Timeslot = slot;
         }
 
-        public Order(int orderid,OrderStatus status, int boxesInvolved, Client client, Product product, int quantity, Store store, Timeslot slot) : this(status,boxesInvolved,client,product,quantity, store, slot)
+        public Order(int orderid,OrderStatus status, int boxesInvolved, Client client, Product product, int quantity, Store store, Timeslot slot, DateOnly fetchdate) : this(status,boxesInvolved,client,product,quantity, store, slot,fetchdate)
         {
             this.OrderId = orderid;
+        }
+
+        //pour la db
+        public Order(int orderid, OrderStatus status, int boxesInvolved, Client client, Store store, Timeslot slot, List<OrderLine> lines, DateOnly fetchdate)
+        {
+            OrderId = orderid;
+            Status = status;
+            BoxesInvolved = boxesInvolved;
+            Client = client;
+            client.AddOrder(this);
+            Store = store;
+            store.AddOrder(this);
+            Orderlines = lines;
+            Fetchdate = fetchdate;
+
+            if (!slot.AddOrder(this))
+            {
+                throw new InvalidOperationException("Ce créneau horaire est complet (10 commandes max).");
+            }
+
+            Timeslot = slot;
+        }
+
+        public Order(int id) 
+        {
+            OrderId = id;
         }
 
         //Méthodes
@@ -99,6 +132,11 @@ namespace ClickAndCollect.Models
         public override int GetHashCode()
         {
             return OrderId.GetHashCode();
+        }
+
+        public static async Task<List<Order>> GetClientOrdersAsync(IOrderDAL dal, int clientid) 
+        {
+            return await dal.GetClientOrdersAsync(clientid);
         }
 
     }

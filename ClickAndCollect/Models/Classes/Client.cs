@@ -1,4 +1,4 @@
-﻿namespace ClickAndCollect.Models
+﻿namespace ClickAndCollect.Models.Classes
 {
     public class Client : User
     {
@@ -10,6 +10,7 @@
         private string streetname;
         private int housenumber;
         private List<Order> orders;
+        private Cart cart;
 
 
         public string Firstname
@@ -48,6 +49,12 @@
             set { housenumber = value; }
         }
 
+        public Cart Cart 
+        {
+            get { return cart; }
+            set { cart = value; }
+        }
+
         public void AddOrder(Order o) 
         {
             if (!this.orders.Contains(o))
@@ -82,7 +89,6 @@
             this.HouseNumber = houseumber;
             this.orders = new List<Order>();
         }
-
 
 
     }

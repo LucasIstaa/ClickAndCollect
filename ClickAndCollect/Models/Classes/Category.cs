@@ -1,11 +1,13 @@
 ﻿using ClickAndCollect.Models.DALInterfaces;
+using System.Text.Json.Serialization;
 
-namespace ClickAndCollect.Models
+namespace ClickAndCollect.Models.Classes
 {
     public class Category
     {
         private int id;
         private String name;
+        [JsonIgnore]
         private List<Product> products;
 
         public int Id

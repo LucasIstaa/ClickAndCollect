@@ -1,6 +1,7 @@
-﻿using ClickAndCollect.Models;
+﻿using ClickAndCollect.Models.Classes;
 using ClickAndCollect.Models.DALInterfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace ClickAndCollect.Controllers
 {
@@ -37,6 +38,46 @@ namespace ClickAndCollect.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+
+        public async Task<IActionResult> AddProductToCart(int id)
+        {
+            Product p = await Product.GetProductAsync(productDAL, id);
+
+            Cart c = HttpContext.Session.GetObject<Cart>("cart");
+
+            if (c == null)
+            {
+                c = new Cart();
+                CartLine cl = new CartLine(1, p);
+                c.AddCartline(cl);
+            }
+            else
+            {
+                bool ok = false;
+
+                foreach (CartLine cl in c.Lines)
+                {
+                    if (cl.Product.Equals(p))
+                    {
+                        cl.Quantity = cl.Quantity + 1;
+                        ok = true;
+                        break;
+                    }
+                }
+
+                if (ok == false)
+                {
+                    CartLine cl = new CartLine(1, p);
+                    c.AddCartline(cl);
+                }
+            }
+
+            HttpContext.Session.SetObject("cart", c);
+
+
+
+            return RedirectToAction("Browse");
         }
     }
 }

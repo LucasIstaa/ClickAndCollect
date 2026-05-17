@@ -1,4 +1,4 @@
-﻿namespace ClickAndCollect.Models
+﻿namespace ClickAndCollect.Models.Classes
 {
     public class Timeslot
     {

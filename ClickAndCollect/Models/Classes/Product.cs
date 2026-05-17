@@ -1,13 +1,12 @@
 ﻿using ClickAndCollect.Models.DALInterfaces;
 
-namespace ClickAndCollect.Models
+namespace ClickAndCollect.Models.Classes
 {
     public class Product
     {
         private int productid;
         private string name;
         private decimal price;
-        private List<OrderLine> orderlines;
         private Category category;
 
         public int ProductId
@@ -34,21 +33,12 @@ namespace ClickAndCollect.Models
             set { category = value; }
         }
 
-        public void AddOrderline(OrderLine line) 
-        {
-            if (!this.orderlines.Contains(line)) 
-            {
-                this.orderlines.Add(line);
-            }
-        }
-
         public Product() { }
 
         public Product(String name, decimal price, Category cat) 
         {
             this.Name = name;
             this.Price = price;
-            this.orderlines = new List<OrderLine>();
             this.Category = cat;
         }
 
@@ -56,6 +46,8 @@ namespace ClickAndCollect.Models
         {
             this.ProductId = id;
         }
+
+        //Méthodes
 
 
         public async static Task<List<Product>> GetAllProducts(IProductDAL dal) 
@@ -69,6 +61,11 @@ namespace ClickAndCollect.Models
             return await dal.GetProductsByCategoryAsync(categoryid);
         }
 
+        public async static Task<Product> GetProductAsync(IProductDAL dal, int id) 
+        {
+            return await dal.GetProductAsync(id);
+        }
+
         public override bool Equals(object? obj)
         {
             return obj is Product product &&
@@ -79,5 +76,11 @@ namespace ClickAndCollect.Models
         {
             return HashCode.Combine(ProductId);
         }
+
+        public override string ToString()
+        {
+            return $"{Name} (#{ProductId}) - {Price}€";
+        }
+
     }
 }

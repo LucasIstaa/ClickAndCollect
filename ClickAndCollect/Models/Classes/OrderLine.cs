@@ -1,4 +1,4 @@
-﻿namespace ClickAndCollect.Models
+﻿namespace ClickAndCollect.Models.Classes
 {
     public class OrderLine
     {
@@ -33,7 +33,6 @@
         public OrderLine(int quantity, Product product, Order order) 
         {
             this.quantity = quantity;
-            product.AddOrderline(this);
             this.Product = product;
             this.Order = order;
             order.AddOrderLine(this);

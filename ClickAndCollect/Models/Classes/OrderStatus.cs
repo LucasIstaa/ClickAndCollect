@@ -1,4 +1,4 @@
-﻿namespace ClickAndCollect.Models.Enumerations
+﻿namespace ClickAndCollect.Models.Classes
 {
     public enum OrderStatus
     {

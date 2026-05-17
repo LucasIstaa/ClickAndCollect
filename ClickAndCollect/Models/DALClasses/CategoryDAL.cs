@@ -1,4 +1,5 @@
-﻿using ClickAndCollect.Models.DALInterfaces;
+﻿using ClickAndCollect.Models.Classes;
+using ClickAndCollect.Models.DALInterfaces;
 using Microsoft.Data.SqlClient;
 
 namespace ClickAndCollect.Models.DALClasses

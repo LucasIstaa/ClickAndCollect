@@ -1,4 +1,5 @@
-﻿using ClickAndCollect.Models.DALInterfaces;
+﻿using ClickAndCollect.Models.Classes;
+using ClickAndCollect.Models.DALInterfaces;
 using Microsoft.Data.SqlClient;
 
 namespace ClickAndCollect.Models.DALClasses
@@ -45,9 +46,30 @@ namespace ClickAndCollect.Models.DALClasses
             return products;
         }
 
-        public Task<Product> GetProductAsync(int id)
+        public async Task<Product> GetProductAsync(int id)
         {
-            throw new NotImplementedException();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("SELECT p.ProductId,p.name AS pname,p.price,p.CategoryId,c.name FROM dbo.Product p "
+                    +"JOIN dbo.Category c ON p.CategoryId=c.CategoryId WHERE p.ProductId=@id", connection);
+                cmd.Parameters.AddWithValue("id", id);
+                await connection.OpenAsync();
+
+                using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                {
+                    if (await reader.ReadAsync())
+                    {
+                        String name = reader.GetString(reader.GetOrdinal("pname"));
+                        decimal price = reader.GetDecimal(reader.GetOrdinal("price"));
+                        int catid = reader.GetInt32(reader.GetOrdinal("CategoryId"));
+                        string cname = reader.GetString(reader.GetOrdinal("name")); 
+                        return new Product(id,name,price, new Category(catid,cname));
+                    }
+
+                    return null;
+                }
+
+            }
         }
 
         public async Task<List<Product>> GetProductsByCategoryAsync(int? categoryid)

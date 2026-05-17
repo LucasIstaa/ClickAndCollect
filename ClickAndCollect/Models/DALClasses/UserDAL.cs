@@ -1,4 +1,5 @@
-﻿using ClickAndCollect.Models.DALInterfaces;
+﻿using ClickAndCollect.Models.Classes;
+using ClickAndCollect.Models.DALInterfaces;
 using Microsoft.Data.SqlClient;
 
 namespace ClickAndCollect.Models.DALClasses
@@ -87,39 +88,7 @@ namespace ClickAndCollect.Models.DALClasses
 
                         switch (role)
                         {
-                            case "Client":
-                                user = new Client
-                                {
-                                    UserId = id,
-                                    Username = uname,
-                                    Password = pwd,
-                                    Firstname = reader.GetString(reader.GetOrdinal("firstname")),
-                                    Lastname = reader.GetString(reader.GetOrdinal("lastname")),
-                                    Phonenumber = reader.GetString(reader.GetOrdinal("phonenumber")),
-                                    Postalcode = reader.GetInt32(reader.GetOrdinal("postalcode")),
-                                    CityName = reader.GetString(reader.GetOrdinal("Cityname")),
-                                    StreetName = reader.GetString(reader.GetOrdinal("streetname")),
-                                    HouseNumber = reader.GetInt32(reader.GetOrdinal("housenumber"))
-                                };
-                                break;
-                            case "Cashier":
-                                user = new Cashier
-                                {
-                                    UserId = id,
-                                    Username = uname,
-                                    Password = pwd,
-                                    StoreId = reader.GetInt32(reader.GetOrdinal("CashierStoreId"))
-                                };
-                                break;
-                            case "OrderMaker":
-                                user = new OrderMaker
-                                {
-                                    UserId = id,
-                                    Username = uname,
-                                    Password = pwd,
-                                    StoreId = reader.GetInt32(reader.GetOrdinal("OrderMakerStoreId"))
-                                };
-                                break;
+                            
                         }
                     }
                 }

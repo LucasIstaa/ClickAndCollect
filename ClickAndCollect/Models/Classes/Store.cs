@@ -1,7 +1,7 @@
 ﻿using ClickAndCollect.Models.DAL;
 using ClickAndCollect.Models.DALInterfaces;
 
-namespace ClickAndCollect.Models
+namespace ClickAndCollect.Models.Classes
 {
     public class Store
     {
@@ -124,6 +124,11 @@ namespace ClickAndCollect.Models
         : this(phonenumber, name, postalcode, cityname, streetname, housenumber,start,end)
         {
             StoreId = storeid;
+        }
+
+        public Store(int storeid) 
+        {
+            this.StoreId = storeid;
         }
 
         //Méthodes

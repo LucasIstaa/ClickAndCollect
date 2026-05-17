@@ -1,7 +1,7 @@
 ﻿using ClickAndCollect.Models.DALInterfaces;
 using System.Data;
 
-namespace ClickAndCollect.Models
+namespace ClickAndCollect.Models.Classes
 {
     public abstract class User
     {

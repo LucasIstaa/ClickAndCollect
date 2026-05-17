@@ -1,4 +1,6 @@
-﻿namespace ClickAndCollect.Models.DALInterfaces
+﻿using ClickAndCollect.Models.Classes;
+
+namespace ClickAndCollect.Models.DALInterfaces
 {
     public interface IClientDAL
     {

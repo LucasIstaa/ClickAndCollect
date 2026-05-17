@@ -1,4 +1,4 @@
-﻿using ClickAndCollect.Models;
+﻿using ClickAndCollect.Models.Classes;
 using ClickAndCollect.Models.DALInterfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,7 +8,7 @@ namespace ClickAndCollect.Controllers
     {
         private readonly IUserDAL userDAL;
 
-        public AccountController(IUserDAL dal)
+        public AccountController(IUserDAL dal, IOrderDAL odal)
         {
             this.userDAL = dal;
         }
@@ -27,7 +27,7 @@ namespace ClickAndCollect.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string username, string password)
         {
-            int? userId = await ClickAndCollect.Models.User.GetByUsername(username, userDAL);
+            int? userId = await Models.Classes.User.GetByUsername(username, userDAL);
 
             if (userId == null)
             {
@@ -35,7 +35,7 @@ namespace ClickAndCollect.Controllers
                 return View();
             }
 
-            bool validPassword = await ClickAndCollect.Models.User.VerifyPassword(password, userId.Value, userDAL);
+            bool validPassword = await Models.Classes.User.VerifyPassword(password, userId.Value, userDAL);
 
             if (!validPassword)
             {
@@ -43,7 +43,7 @@ namespace ClickAndCollect.Controllers
                 return View();
             }
 
-            User? user = await ClickAndCollect.Models.User.GetUser(userId.Value, userDAL);
+            User? user = await Models.Classes.User.GetUser(userId.Value, userDAL);
 
             string role = user.GetRole();
 
@@ -59,5 +59,6 @@ namespace ClickAndCollect.Controllers
                 _ => RedirectToAction("Login")
             };
         }
+
     }
 }
