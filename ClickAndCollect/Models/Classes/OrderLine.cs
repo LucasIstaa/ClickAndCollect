@@ -38,6 +38,13 @@
             order.AddOrderLine(this);
         }
 
+        public OrderLine(int id, int quantity, Product product)
+        {
+            this.OrderLineId = id;
+            this.Quantity = quantity;
+            this.Product = product;
+        }
+
         public OrderLine(int id,int quantity, Product product, Order order) :this(quantity,product,order)
         {
             this.OrderLineId = id;

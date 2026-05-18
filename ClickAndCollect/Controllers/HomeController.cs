@@ -22,7 +22,7 @@ namespace ClickAndCollect.Controllers
             }
             if (role == "OrderMaker")
             {
-                return RedirectToAction("Index", "OrderMaker");
+                return RedirectToAction("CheckTomorrowOrders", "OrderMaker");
             }
 
             return View();
@@ -30,6 +30,16 @@ namespace ClickAndCollect.Controllers
 
         public IActionResult Privacy()
         {
+            string? role = HttpContext.Session.GetString("Role");
+            if (role == "Cashier")
+            {
+                return RedirectToAction("ConsultTodayClientList", "Cashier");
+            }
+            if (role == "OrderMaker")
+            {
+                return RedirectToAction("CheckTomorrowOrders", "OrderMaker");
+            }
+
             return View();
         }
 

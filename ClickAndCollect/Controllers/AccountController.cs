@@ -21,7 +21,7 @@ namespace ClickAndCollect.Controllers
                 return role switch
                 {
                     "Cashier" => RedirectToAction("ConsultTodayClientList", "Cashier"),
-                    "OrderMaker" => RedirectToAction("Index", "OrderMaker"),
+                    "OrderMaker" => RedirectToAction("CheckTomorrowOrders", "OrderMaker"),
                     "Client" => RedirectToAction("Browse", "Product"),
                     _ => View()
                 };
@@ -84,7 +84,7 @@ namespace ClickAndCollect.Controllers
             {
                 "Client" => RedirectToAction("Browse", "Product"),
                 "Cashier" => RedirectToAction("ConsultTodayClientList", "Cashier"),
-                "OrderMaker" => RedirectToAction("Index", "OrderMaker"),
+                "OrderMaker" => RedirectToAction("CheckTomorrowOrders", "OrderMaker"),
                 _ => RedirectToAction("Login")
             };
         }
