@@ -114,6 +114,25 @@ namespace ClickAndCollect.Models.Classes
             Timeslot = slot;
         }
 
+        public Order(int orderid, OrderStatus status, int boxesInvolved, Client client, Store store, Timeslot slot, DateOnly fetchdate)
+        {
+            OrderId = orderid;
+            Status = status;
+            BoxesInvolved = boxesInvolved;
+            Client = client;
+            client.AddOrder(this);
+            Store = store;
+            store.AddOrder(this);
+            Fetchdate = fetchdate;
+
+            if (!slot.AddOrder(this))
+            {
+                throw new InvalidOperationException("Ce créneau horaire est complet (10 commandes max).");
+            }
+
+            Timeslot = slot;
+        }
+
         public Order(int id) 
         {
             OrderId = id;
@@ -137,6 +156,28 @@ namespace ClickAndCollect.Models.Classes
         public static async Task<List<Order>> GetClientOrdersAsync(IOrderDAL dal, int clientid) 
         {
             return await dal.GetClientOrdersAsync(clientid);
+        }
+
+        public static async Task<Order> GetOrderAsync(IOrderDAL dal, int id) 
+        {
+            return await dal.GetOrderAsync(id);
+        }
+
+        public Decimal TotalPrice() 
+        {
+            Decimal tot = 0;
+
+            foreach (OrderLine line in Orderlines) 
+            {
+                tot = tot + (line.Quantity * line.Product.Price);
+            }
+
+            return tot;
+        }
+
+        public static async Task<bool> AddOrderAsync(IOrderDAL dal, Order o) 
+        {
+            return await dal.AddOrderAsync(o);
         }
 
     }

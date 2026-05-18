@@ -1,4 +1,5 @@
 ﻿using ClickAndCollect.Models;
+using ClickAndCollect.Models.Classes;
 using ClickAndCollect.Models.DALInterfaces;
 using Microsoft.AspNetCore.Mvc;
 

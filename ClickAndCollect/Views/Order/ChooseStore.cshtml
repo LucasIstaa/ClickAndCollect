@@ -1,0 +1,44 @@
+﻿@model List<ClickAndCollect.Models.Classes.Store>
+
+<h2 class="mb-4">Choose a Store</h2>
+
+@if (Model == null || !Model.Any())
+{
+    <p>No stores available.</p>
+}
+else
+{
+    <div class="row">
+        @foreach (var store in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+
+                        <h5 class="card-title">@store.Name</h5>
+
+                        <p class="card-text">
+                            <strong>Address:</strong><br />
+                            @store.StreetName @store.HouseNumber<br />
+                            @store.PostalCode @store.CityName
+                        </p>
+
+                        @if (!string.IsNullOrEmpty(store.PhoneNumber))
+                        {
+                            <p class="card-text">
+                                <strong>Phone:</strong> @store.PhoneNumber
+                            </p>
+                        }
+
+                        <a asp-controller="Order"
+                           asp-action="ChooseTimeslot"
+                           asp-route-id="@store.StoreId"
+                           class="btn btn-primary">
+                            Select this store
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

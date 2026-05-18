@@ -35,7 +35,6 @@
             this.quantity = quantity;
             this.Product = product;
             this.Order = order;
-            order.AddOrderLine(this);
         }
 
         public OrderLine(int id,int quantity, Product product, Order order) :this(quantity,product,order)

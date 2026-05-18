@@ -4,10 +4,12 @@ namespace ClickAndCollect.Models.DALInterfaces
 {
     public interface IStoreDAL
     {
-        public Task<bool> AddStoreAsync(Store s);
-        public Task<bool> UpdateStoreAsync(Store s);
-        public Task<bool> RemoveStoreAsync(Store s);
-        public Task<Store> GetStoreAsync(int id);
-        public Task<List<Store>> GetAllStoresAsync();
+        Task<bool> AddStoreAsync(Store s);
+        Task<bool> UpdateStoreAsync(Store s);
+        Task<bool> RemoveStoreAsync(Store s);
+        Task<Store> GetStoreAsync(int id);
+        Task<List<Store>> GetAllStoresAsync();
+        Task<List<Timeslot>> GetStoreTimeslotsAsync(int storeId);
+        
     }
 }

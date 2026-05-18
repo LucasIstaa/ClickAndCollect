@@ -25,15 +25,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        <li>
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Browse">Browse products</a>
-                        </li>
-                        <li>
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="Manage">Manage cart</a>
-                        </li>
-                        <li>
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Log in</a>
-                        </li>
+                        
 
                         @if (Context.Session.GetString("Role") != "Cashier" && Context.Session.GetString("Role") != "OrderMaker")
                         {
@@ -46,6 +38,15 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Browse">Browse products</a>
                             </li>
+                            <li>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Browse">Browse products</a>
+                        </li>
+                        <li>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="Manage">Manage cart</a>
+                        </li>
+                        <li>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Log in</a>
+                        </li>
                         }
                         @if (Context.Session.GetString("Role") == "Cashier")
                         {

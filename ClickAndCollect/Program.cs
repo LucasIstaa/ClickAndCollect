@@ -12,6 +12,7 @@ builder.Services.AddTransient<IProductDAL>(productDAL => new ProductDAL(connecti
 builder.Services.AddTransient<ICategoryDAL>(categoryDAL => new CategoryDAL(connectionString));
 builder.Services.AddTransient<IUserDAL>(userDAL => new UserDAL(connectionString));
 builder.Services.AddTransient<IOrderDAL>(orderDAL => new OrderDAL(connectionString));
+builder.Services.AddTransient<ITimeslotDAL>(tslotDAL => new TimeslotDAL(connectionString));
 
 builder.Services.AddSession(options => 
 {

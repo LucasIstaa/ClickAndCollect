@@ -39,12 +39,41 @@ namespace ClickAndCollect.Models.DAL
             return success;
         }
 
-        public Task<List<Store>> GetAllStoresAsync()
+        public async Task<List<Store>> GetAllStoresAsync()
+        {
+            List<Store> list = new List<Store>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("SELECT * FROM dbo.Store", connection);
+                await connection.OpenAsync();
+
+                using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        int id = reader.GetInt32(reader.GetOrdinal("StoreId"));
+                        string pn = reader.GetString(reader.GetOrdinal("phonenumber"));
+                        string name = reader.GetString(reader.GetOrdinal("name"));
+                        int postal = reader.GetInt32(reader.GetOrdinal("postalcode"));
+                        string cname = reader.GetString(reader.GetOrdinal("cityname"));
+                        string sname = reader.GetString(reader.GetOrdinal("streetname"));
+                        int hnumber = reader.GetInt32(reader.GetOrdinal("housenumber"));
+                        Store s = new Store(id,pn,name,postal,cname,sname,hnumber);
+                        list.Add(s);
+                    }
+                }
+
+            }
+            return list;
+        }
+
+        public Task<Store> GetStoreAsync(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Store> GetStoreAsync(int id)
+        public Task<List<Timeslot>> GetStoreTimeslotsAsync(int storeId)
         {
             throw new NotImplementedException();
         }

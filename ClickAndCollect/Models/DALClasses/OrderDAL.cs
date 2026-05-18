@@ -14,10 +14,38 @@ namespace ClickAndCollect.Models.DALClasses
             this.connectionString = conn;
         }
 
-        public Task<bool> AddOrderAsync(Order o)
+        public async Task<bool> AddOrderAsync(Order o)
         {
-            throw new NotImplementedException();
+            bool success = false;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("INSERT INTO Order_(status,boxes,StoreId,TimeslotId,UserId,fetchdate)"
+                    + " OUTPUT INSERTED.OrderId VALUES(@stat,@box,@stid,@tid,@uid,@fdate)", conn);
+                cmd.Parameters.AddWithValue("stat", o.Status);
+                cmd.Parameters.AddWithValue("box", o.BoxesInvolved);
+                cmd.Parameters.AddWithValue("stid", o.Store.StoreId);
+                cmd.Parameters.AddWithValue("tid", o.Timeslot.TimeslotId);
+                cmd.Parameters.AddWithValue("uid", o.Client.UserId);
+                cmd.Parameters.AddWithValue("fdate", o.Fetchdate);
+                await conn.OpenAsync();
+
+                int newId = (int) await cmd.ExecuteScalarAsync();
+                o.OrderId = newId;
+
+                foreach (OrderLine line in o.Orderlines)
+                {
+                    line.Order = o;
+                }
+
+                if (await AddOrderlinesAsync(o.Orderlines)) 
+                {
+                    success = o.OrderId > 0;
+                }
+            }
+            return success;
         }
+
 
         public Task<List<Order>> GetAllOrdersAsync()
         {
@@ -129,16 +157,17 @@ namespace ClickAndCollect.Models.DALClasses
                         string statusStr = reader.GetString(reader.GetOrdinal("status"));
                         OrderStatus orderStatus = Enum.Parse<OrderStatus>(statusStr);
 
-                        Order order = new Order(
+                        /*Order order = new Order(
                             reader.GetInt32(reader.GetOrdinal("OrderId")),
                             orderStatus,
                             reader.GetInt32(reader.GetOrdinal("boxes")),
                             client,
                             store,
-                            timeslot
-                        );
+                            timeslot,
+                            null
+                        );*/
 
-                        orders.Add(order);
+                        //orders.Add(order);
                     }
                 }
             }
@@ -147,7 +176,42 @@ namespace ClickAndCollect.Models.DALClasses
 
         public async Task<Order> GetOrderAsync(int id)
         {
-            return await GetOrderByIdAsync(id);
+            Order o = null;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                SqlCommand cmd = new SqlCommand(
+                    @"SELECT o.status, o.boxes, o.StoreId, o.TimeslotId, o.fetchdate,
+                      t.start_, t.end_
+                      FROM dbo.Order_ o
+                      JOIN dbo.Timeslot t ON o.TimeslotId = t.TimeslotId
+                      WHERE o.OrderId = @id",
+                    conn);
+                cmd.Parameters.AddWithValue("id", id);
+                await conn.OpenAsync();
+
+                using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                {
+                    if (await reader.ReadAsync())
+                    {
+                        Client cl = new Client(id, null, null, null, null, null, 0, null, null, 0);
+                        int boxes = reader.GetInt32(reader.GetOrdinal("boxes"));
+                        Enum.TryParse(reader.GetString(reader.GetOrdinal("status")), true, out OrderStatus status);
+                        int storeid = reader.GetInt32(reader.GetOrdinal("StoreId"));
+                        int timeslotid = reader.GetInt32(reader.GetOrdinal("TimeslotId"));
+                        TimeOnly start = TimeOnly.FromTimeSpan(reader.GetTimeSpan(reader.GetOrdinal("start_")));
+                        TimeOnly end = TimeOnly.FromTimeSpan(reader.GetTimeSpan(reader.GetOrdinal("end_")));
+                        DateOnly fetchdate = DateOnly.FromDateTime(reader.GetDateTime(reader.GetOrdinal("fetchdate")));
+                        Store store = new Store(storeid);
+                        Timeslot tslot = new Timeslot(timeslotid, start, end, store);
+                        List<OrderLine> lines = await GetOrderlinesAsync(id);
+                        o = new Order(id, status, boxes, cl, store, tslot, lines, fetchdate);
+
+                    }
+                }
+            }
+            return o;
+
         }
 
         public async Task<Order?> GetOrderByIdAsync(int orderId)
@@ -211,14 +275,14 @@ namespace ClickAndCollect.Models.DALClasses
                         string statusStr = reader.GetString(reader.GetOrdinal("status"));
                         OrderStatus orderStatus = Enum.Parse<OrderStatus>(statusStr);
 
-                        order = new Order(
+                        /*order = new Order(
                             reader.GetInt32(reader.GetOrdinal("OrderId")),
                             orderStatus,
                             reader.GetInt32(reader.GetOrdinal("boxes")),
                             client,
                             store,
                             timeslot
-                        );
+                        );*/
                     }
                 }
             }
@@ -341,6 +405,35 @@ namespace ClickAndCollect.Models.DALClasses
         {
             throw new NotImplementedException();
         }
+
+        public async Task<bool> AddOrderlinesAsync(List<OrderLine> lines)
+        {
+            bool success = true;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                await conn.OpenAsync();
+
+                foreach (OrderLine line in lines)
+                {
+                    SqlCommand cmd = new SqlCommand(
+                        "INSERT INTO Order_line (OrderId, ProductId, Quantity) " +
+                        "VALUES (@oid, @pid, @qty)", conn);
+
+                    cmd.Parameters.AddWithValue("oid", line.Order.OrderId);
+                    cmd.Parameters.AddWithValue("pid", line.Product.ProductId);
+                    cmd.Parameters.AddWithValue("qty", line.Quantity);
+
+                    int res = await cmd.ExecuteNonQueryAsync();
+
+                    if (res <= 0)
+                        success = false;
+                }
+            }
+
+            return success;
+        }
+
     }
 }
 

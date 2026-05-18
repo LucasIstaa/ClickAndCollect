@@ -1,0 +1,42 @@
+﻿@model List<ClickAndCollect.Models.Classes.Timeslot>
+
+<h2 class="mb-4">Choose a Timeslot</h2>
+
+@if (Model == null || !Model.Any())
+{
+    <p>No available timeslots for this store.</p>
+}
+else
+{
+    <div class="row">
+        @foreach (var slot in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm border-success">
+                    <div class="card-body">
+
+                        <h5 class="card-title">
+                            @slot.Start - @slot.End
+                        </h5>
+
+                        <p class="card-text">
+                            <strong>@slot.OrderNumber</strong> / 10 orders
+                        </p>
+
+                        <span class="badge bg-success mb-2">Available</span>
+                        <br />
+
+                        <a asp-controller="Order"
+                           asp-action="PlaceOrder"
+                           asp-route-storeid="@slot.Store.StoreId"
+                           asp-route-timeslotid="@slot.TimeslotId"
+                           class="btn btn-primary">
+                            Select this timeslot
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

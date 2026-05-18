@@ -1,4 +1,6 @@
-﻿namespace ClickAndCollect.Models.Classes
+﻿using ClickAndCollect.Models.DALInterfaces;
+
+namespace ClickAndCollect.Models.Classes
 {
     public class Timeslot
     {
@@ -67,6 +69,16 @@
             this.TimeslotId = id;
         }
 
+        public Timeslot(int id, TimeOnly start, TimeOnly end, Store store, int ordernumber) : this(start, end, store)
+        {
+            this.TimeslotId = id;
+            this.ordernumber = ordernumber;
+        }
+        public Timeslot(int id) 
+        {
+            this.TimeslotId = id;
+        }
+
         public override bool Equals(object? obj)
         {
             return obj is Timeslot timeslot &&
@@ -76,6 +88,11 @@
         public override int GetHashCode()
         {
             return HashCode.Combine(TimeslotId);
+        }
+
+        public static async Task<List<Timeslot>> GetStoreTimeslotsAsync(ITimeslotDAL dal, int storeid) 
+        {
+            return await dal.GetStoreTimeslotsAsync(storeid);
         }
     }
 }
