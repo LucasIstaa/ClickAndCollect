@@ -100,7 +100,7 @@ namespace ClickAndCollect.Models.DALClasses
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 SqlCommand cmd = new SqlCommand(
-                    @"SELECT o.OrderId, o.status, o.boxes,
+                    @"SELECT o.OrderId, o.status, o.boxes,o.fetchdate,
                       u.UserId, u.username, u.password, u.firstname, u.lastname,
                       u.phonenumber, u.postalcode, u.Cityname, u.streetname, u.housenumber,
                       t.TimeslotId, t.start_, t.end_,
@@ -112,7 +112,7 @@ namespace ClickAndCollect.Models.DALClasses
                       INNER JOIN dbo.Timeslot t ON o.TimeslotId = t.TimeslotId
                       INNER JOIN dbo.Store s ON o.StoreId = s.StoreId
                       WHERE o.StoreId = @storeId
-                      AND CAST(t.start_ AS DATE) = CAST(GETDATE() AS DATE)
+                      AND o.fetchdate = CAST(GETDATE() AS DATE)
                       AND o.status != 'Finalized'
                       ORDER BY t.start_",
                     connection);
@@ -124,28 +124,9 @@ namespace ClickAndCollect.Models.DALClasses
                 {
                     while (await reader.ReadAsync())
                     {
-                        Store store = new Store(
-                            reader.GetInt32(reader.GetOrdinal("StoreId")),
-                            reader.GetString(reader.GetOrdinal("SPhone")),
-                            reader.GetString(reader.GetOrdinal("SName")),
-                            reader.GetInt32(reader.GetOrdinal("SPostal")),
-                            reader.GetString(reader.GetOrdinal("SCity")),
-                            reader.GetString(reader.GetOrdinal("SStreet")),
-                            reader.GetInt32(reader.GetOrdinal("SHouse"))
-                        );
+                        Store store = new Store(storeId);
 
-                        Client client = new Client(
-                            reader.GetInt32(reader.GetOrdinal("UserId")),
-                            reader.GetString(reader.GetOrdinal("username")),
-                            reader.GetString(reader.GetOrdinal("password")),
-                            reader.GetString(reader.GetOrdinal("firstname")),
-                            reader.GetString(reader.GetOrdinal("lastname")),
-                            reader.GetString(reader.GetOrdinal("phonenumber")),
-                            reader.GetInt32(reader.GetOrdinal("postalcode")),
-                            reader.GetString(reader.GetOrdinal("Cityname")),
-                            reader.GetString(reader.GetOrdinal("streetname")),
-                            reader.GetInt32(reader.GetOrdinal("housenumber"))
-                        );
+                        Client client = new Client(reader.GetInt32(reader.GetOrdinal("UserId")),null,null,null, null, null, 0, null, null, 0);
 
                         Timeslot timeslot = new Timeslot(
                             reader.GetInt32(reader.GetOrdinal("TimeslotId")),
@@ -156,18 +137,19 @@ namespace ClickAndCollect.Models.DALClasses
 
                         string statusStr = reader.GetString(reader.GetOrdinal("status"));
                         OrderStatus orderStatus = Enum.Parse<OrderStatus>(statusStr);
+                        DateOnly fetch = DateOnly.FromDateTime(reader.GetDateTime(reader.GetOrdinal("fetchdate")));
 
-                        /*Order order = new Order(
+                        Order order = new Order(
                             reader.GetInt32(reader.GetOrdinal("OrderId")),
                             orderStatus,
                             reader.GetInt32(reader.GetOrdinal("boxes")),
                             client,
                             store,
                             timeslot,
-                            null
-                        );*/
+                            fetch
+                        );
 
-                        //orders.Add(order);
+                        orders.Add(order);
                     }
                 }
             }
