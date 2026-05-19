@@ -1,6 +1,6 @@
 
 ﻿using ClickAndCollect.Models.Classes;
-
+using ClickAndCollect.Filters;
 using ClickAndCollect.Models.DALInterfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
@@ -18,8 +18,11 @@ namespace ClickAndCollect.Controllers
             this.categoryDAL = catdal;
         }
 
+        [RoleFilter("Client")]
         public async Task<IActionResult> Browse(int? categoryid) 
         {
+            ViewBag.SelectedCategory = categoryid;
+
             string? role = HttpContext.Session.GetString("Role");
             if (role == "Cashier")
             {
@@ -52,7 +55,8 @@ namespace ClickAndCollect.Controllers
             return View();
         }
 
-        public async Task<IActionResult> AddProductToCart(int id)
+        [RoleFilter("Client")]
+        public async Task<IActionResult> AddProductToCart(int id, int? categoryid)
         {
             Product p = await Product.GetProductAsync(productDAL, id);
 
@@ -89,6 +93,11 @@ namespace ClickAndCollect.Controllers
 
 
 
+            if (categoryid.HasValue) 
+            {
+                return RedirectToAction("Browse", new { categoryid });
+            }
+                
             return RedirectToAction("Browse");
         }
     }

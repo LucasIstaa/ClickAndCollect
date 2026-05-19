@@ -156,5 +156,10 @@ namespace ClickAndCollect.Models.Classes
             return await dal.GetAllStoresAsync();
         }
 
+        public static async Task<Store> GetStoreAsync(IStoreDAL dal, int id) 
+        {
+            return await dal.GetStoreAsync(id);
+        }
+
     }
 }

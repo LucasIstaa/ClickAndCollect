@@ -1,4 +1,5 @@
-﻿using ClickAndCollect.Models.Classes;
+﻿using ClickAndCollect.Filters;
+using ClickAndCollect.Models.Classes;
 using ClickAndCollect.Models.DALInterfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
@@ -19,6 +20,7 @@ namespace ClickAndCollect.Controllers
             return View();
         }
 
+        [RoleFilter("Client")]
         public IActionResult Manage()
         {
             Cart c = HttpContext.Session.GetObject<Cart>("cart");
@@ -37,6 +39,7 @@ namespace ClickAndCollect.Controllers
             return View("ManageCart",cl);
         }
 
+        [RoleFilter("Client")]
         public IActionResult RemoveProduct(int id)
         {
             Cart c = HttpContext.Session.GetObject<Cart>("cart");
@@ -68,6 +71,7 @@ namespace ClickAndCollect.Controllers
             return RedirectToAction("Manage");
         }
 
+        [RoleFilter("Client")]
         public IActionResult ClearCart()
         {
             HttpContext.Session.Remove("cart");

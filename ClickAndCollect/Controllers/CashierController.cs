@@ -1,4 +1,5 @@
-﻿using ClickAndCollect.Models;
+﻿using ClickAndCollect.Filters;
+using ClickAndCollect.Models;
 using ClickAndCollect.Models.Classes;
 using ClickAndCollect.Models.DALInterfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +20,7 @@ namespace ClickAndCollect.Controllers
             return RedirectToAction("ConsultTodayClientList");
         }
 
+        [RoleFilter("Cashier")]
         public async Task<IActionResult> ConsultTodayClientList()
         {
             string? role = HttpContext.Session.GetString("Role");
@@ -43,6 +45,7 @@ namespace ClickAndCollect.Controllers
             return View("ConsultTodayClientList", orders);
         }
 
+        [RoleFilter("Cashier")]
         public async Task<IActionResult> FinalizeOrder(int orderId)
         {
             string? role = HttpContext.Session.GetString("Role");

@@ -47,10 +47,12 @@ else
                     <td>
                         <form asp-controller="Product" asp-action="AddProductToCart" method="post">
                             <input type="hidden" name="id" value="@p.ProductId" />
+                            <input type="hidden" name="categoryid" value="@ViewBag.SelectedCategory" />
                             <button type="submit" class="btn btn-primary">
                                 Add to cart
                             </button>
                         </form>
+
                     </td>
                 </tr>
             }

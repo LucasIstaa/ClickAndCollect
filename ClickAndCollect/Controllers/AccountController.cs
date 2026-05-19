@@ -13,6 +13,11 @@ namespace ClickAndCollect.Controllers
             this.userDAL = dal;
         }
 
+        public IActionResult Index() 
+        {
+            return View("Login");
+        }
+
         public IActionResult Login()
         {
             string? role = HttpContext.Session.GetString("Role");

@@ -19,34 +19,28 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        
 
-                        @if (Context.Session.GetString("Role") != "Cashier" && Context.Session.GetString("Role") != "OrderMaker")
+                        @if (Context.Session.GetString("Role") == null )
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                             </li>
+                            <li>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Log in</a>
+                            </li>
                         }
-                        @if (Context.Session.GetString("Role") == "Client" || Context.Session.GetString("Role") == null)
+                        @if (Context.Session.GetString("Role") == "Client" )
                         {
-                            <li class="nav-item">
+                            
+                            <li>
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Browse">Browse products</a>
                             </li>
                             <li>
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Browse">Browse products</a>
-                        </li>
-                        <li>
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="Manage">Manage cart</a>
-                        </li>
-                        <li>
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Log in</a>
-                        </li>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="Manage">Manage cart</a>
+                            </li>
+                            <li>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Order" asp-action="ViewOrdersHistory">Orders History</a>
+                            </li>
                         }
                         @if (Context.Session.GetString("Role") == "Cashier")
                         {

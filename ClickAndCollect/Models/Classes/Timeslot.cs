@@ -94,5 +94,10 @@ namespace ClickAndCollect.Models.Classes
         {
             return await dal.GetStoreTimeslotsAsync(storeid);
         }
+
+        public static async Task<Timeslot> GetTimeslotAsync(ITimeslotDAL dal, int id)
+        {
+            return await dal.GetTimeslotAsync(id);
+        }
     }
 }

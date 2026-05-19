@@ -30,18 +30,9 @@ namespace ClickAndCollect.Models.DALClasses
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                SqlCommand cmd = new SqlCommand(
-                    @"SELECT 
-                t.TimeslotId,
-                t.start_,
-                t.end_,
-                COUNT(o.OrderId) AS OrderCount
-              FROM Timeslot t
-              LEFT JOIN Order_ o ON o.TimeslotId = t.TimeslotId
-              WHERE t.StoreId = @storeId
-              GROUP BY t.TimeslotId, t.start_, t.end_
-              ORDER BY t.start_",
-                    connection);
+                SqlCommand cmd = new SqlCommand(@"SELECT t.TimeslotId,t.start_,t.end_,COUNT(o.OrderId) AS OrderCount
+                FROM Timeslot t LEFT JOIN Order_ o ON o.TimeslotId = t.TimeslotId WHERE t.StoreId = @storeId GROUP BY t.TimeslotId, t.start_, t.end_
+                ORDER BY t.start_",connection);
 
                 cmd.Parameters.AddWithValue("@storeId", storeId);
                 await connection.OpenAsync();
@@ -70,10 +61,41 @@ namespace ClickAndCollect.Models.DALClasses
 
 
 
-        public Task<Timeslot> GetTimeslotAsync(int id)
+        public async Task<Timeslot> GetTimeslotAsync(int id)
         {
-            throw new NotImplementedException();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand cmd = new SqlCommand(@"
+            SELECT t.TimeslotId, t.start_, t.end_, t.StoreId,
+                   (SELECT COUNT(*) FROM Order_ o WHERE o.TimeslotId = t.TimeslotId) AS OrderCount
+            FROM Timeslot t
+            WHERE t.TimeslotId = @id",
+                    connection);
+
+                cmd.Parameters.AddWithValue("@id", id);
+
+                await connection.OpenAsync();
+
+                using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                {
+                    if (await reader.ReadAsync())
+                    {
+                        int tid = reader.GetInt32(reader.GetOrdinal("TimeslotId"));
+                        TimeOnly start = TimeOnly.FromTimeSpan(reader.GetTimeSpan(reader.GetOrdinal("start_")));
+                        TimeOnly end = TimeOnly.FromTimeSpan(reader.GetTimeSpan(reader.GetOrdinal("end_")));
+                        int storeId = reader.GetInt32(reader.GetOrdinal("StoreId"));
+                        int orderCount = reader.GetInt32(reader.GetOrdinal("OrderCount"));
+
+                        Store store = new Store(storeId);
+
+                        return new Timeslot(tid, start, end, store, orderCount);
+                    }
+                }
+            }
+
+            return null;
         }
+
 
         public Task<bool> RemoveTimeslotAsync(Timeslot t)
         {

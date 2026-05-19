@@ -11,16 +11,20 @@
             <dd class="col-sm-9">@Model.Status</dd>
 
             <dt class="col-sm-3">Pickup Date</dt>
-            <dd class="col-sm-9">@Model.Fetchdate.ToString("yyyy-MM-dd")</dd>
+            <dd class="col-sm-9">@Model.Fetchdate.ToString("dd-MM-yyyy")</dd>
 
             <dt class="col-sm-3">Timeslot</dt>
             <dd class="col-sm-9">@Model.Timeslot.Start - @Model.Timeslot.End</dd>
 
             <dt class="col-sm-3">Store</dt>
-            <dd class="col-sm-9">Store #@Model.Store.StoreId</dd>
+            <dd class="col-sm-9">
+                <strong>@Model.Store.Name</strong><br />
+                @Model.Store.StreetName @Model.Store.HouseNumber<br />
+                @Model.Store.PostalCode @Model.Store.CityName<br />
+                <strong>Phone:</strong> @Model.Store.PhoneNumber
+            </dd>
 
-            <dt class="col-sm-3">Boxes involved</dt>
-            <dd class="col-sm-9">@Model.BoxesInvolved</dd>
+
         </dl>
     </div>
 </div>
