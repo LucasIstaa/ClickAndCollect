@@ -30,7 +30,7 @@ namespace ClickAndCollect.Controllers
             }
             if (role == "OrderMaker")
             {
-                return RedirectToAction("Index", "OrderMaker");
+                return RedirectToAction("CheckTomorrowOrders", "OrderMaker");
             }
 
             List<Product> products = new List<Product>();

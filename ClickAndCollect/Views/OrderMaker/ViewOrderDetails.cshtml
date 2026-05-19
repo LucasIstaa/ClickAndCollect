@@ -1,0 +1,41 @@
+﻿@model ClickAndCollect.Models.Classes.Order
+@{
+    ViewData["Title"] = "Order Details";
+}
+
+<h2>Order #@Model.OrderId - Details</h2>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">Order Information</h5>
+        <p><strong>Pickup time:</strong> @Model.Timeslot.Start.ToString("HH:mm") - @Model.Timeslot.End.ToString("HH:mm")</p>
+        <p><strong>Status:</strong> @Model.Status</p>
+    </div>
+</div>
+
+<h4>Products</h4>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var line in Model.Orderlines)
+        {
+            <tr>
+                <td>@line.Product.Name</td>
+                <td>@line.Quantity</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="d-flex justify-content-between">
+    <a asp-controller="OrderMaker" asp-action="CheckTomorrowOrders" class="btn btn-secondary">Back to tomorrow's orders</a>
+    @if (Model.Status == ClickAndCollect.Models.Classes.OrderStatus.Placed)
+    {
+        <a asp-controller="OrderMaker" asp-action="FinalizePreparation" asp-route-orderId="@Model.OrderId" class="btn btn-success">Finalize preparation</a>
+    }
+</div>

@@ -1,0 +1,26 @@
+﻿@model ClickAndCollect.Models.Classes.Order
+@{
+    ViewData["Title"] = "Finalize Preparation";
+}
+
+<h2>Finalize Preparation - Order #@Model.OrderId</h2>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">Order Information</h5>
+        <p><strong>Pickup time:</strong> @Model.Timeslot.Start.ToString("HH:mm") - @Model.Timeslot.End.ToString("HH:mm")</p>
+        <p><strong>Status:</strong> @Model.Status</p>
+    </div>
+</div>
+
+<form method="post" asp-controller="OrderMaker" asp-action="ConfirmPreparation">
+    <input type="hidden" name="orderId" value="@Model.OrderId" />
+    <div class="mb-3">
+        <label for="boxesUsed" class="form-label">Number of boxes used for preparation</label>
+        <input type="number" class="form-control" id="boxesUsed" name="boxesUsed" value="0" min="0" required />
+    </div>
+    <div class="d-flex justify-content-between">
+        <a asp-controller="OrderMaker" asp-action="ViewOrderDetails" asp-route-orderId="@Model.OrderId" class="btn btn-secondary">Back to order details</a>
+        <button type="submit" class="btn btn-success">Confirm preparation</button>
+    </div>
+</form>

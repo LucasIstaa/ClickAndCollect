@@ -298,7 +298,7 @@ namespace ClickAndCollect.Models.DALClasses
                         string pname = reader.GetString(reader.GetOrdinal("name"));
 
                         Product p = new Product(pid, pname, price, new Category(catid, null));
-                        OrderLine ol = new OrderLine(ordlid, quantity, p, null);
+                        OrderLine ol = new OrderLine(ordlid, quantity, p);
 
                         orderlines.Add(ol);
                     }
@@ -414,6 +414,109 @@ namespace ClickAndCollect.Models.DALClasses
             }
 
             return success;
+        }
+
+        public async Task<List<Order>> GetTomorrowOrdersByStoreAsync(int storeId)
+        {
+            List<Order> orders = new List<Order>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand cmd = new SqlCommand(
+                    @"SELECT o.OrderId, o.status, o.boxes,
+              u.UserId, u.username, u.password, u.firstname, u.lastname,
+              u.phonenumber, u.postalcode, u.Cityname, u.streetname, u.housenumber,
+              t.TimeslotId, t.start_, t.end_,
+              s.StoreId, s.phonenumber AS SPhone, s.name AS SName,
+              s.postalcode AS SPostal, s.cityname AS SCity,
+              s.streetname AS SStreet, s.housenumber AS SHouse,
+              o.fetchdate
+              FROM dbo.Order_ o
+              INNER JOIN dbo.User_ u ON o.UserId = u.UserId
+              INNER JOIN dbo.Timeslot t ON o.TimeslotId = t.TimeslotId
+              INNER JOIN dbo.Store s ON o.StoreId = s.StoreId
+              WHERE o.StoreId = @storeId
+              AND CAST(t.start_ AS DATE) = CAST(DATEADD(DAY, 1, GETDATE()) AS DATE)
+              ORDER BY t.start_",
+                    connection);
+
+                cmd.Parameters.AddWithValue("@storeId", storeId);
+                await connection.OpenAsync();
+
+                using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        Store store = new Store(
+                            reader.GetInt32(reader.GetOrdinal("StoreId")),
+                            reader.GetString(reader.GetOrdinal("SPhone")),
+                            reader.GetString(reader.GetOrdinal("SName")),
+                            reader.GetInt32(reader.GetOrdinal("SPostal")),
+                            reader.GetString(reader.GetOrdinal("SCity")),
+                            reader.GetString(reader.GetOrdinal("SStreet")),
+                            reader.GetInt32(reader.GetOrdinal("SHouse"))
+                        );
+
+                        Client client = new Client(
+                            reader.GetInt32(reader.GetOrdinal("UserId")),
+                            reader.GetString(reader.GetOrdinal("username")),
+                            reader.GetString(reader.GetOrdinal("password")),
+                            reader.GetString(reader.GetOrdinal("firstname")),
+                            reader.GetString(reader.GetOrdinal("lastname")),
+                            reader.GetString(reader.GetOrdinal("phonenumber")),
+                            reader.GetInt32(reader.GetOrdinal("postalcode")),
+                            reader.GetString(reader.GetOrdinal("Cityname")),
+                            reader.GetString(reader.GetOrdinal("streetname")),
+                            reader.GetInt32(reader.GetOrdinal("housenumber"))
+                        );
+
+                        Timeslot timeslot = new Timeslot(
+                            reader.GetInt32(reader.GetOrdinal("TimeslotId")),
+                            TimeOnly.FromDateTime(reader.GetDateTime(reader.GetOrdinal("start_"))),
+                            TimeOnly.FromDateTime(reader.GetDateTime(reader.GetOrdinal("end_"))),
+                            store
+                        );
+
+                        string statusStr = reader.GetString(reader.GetOrdinal("status"));
+                        OrderStatus orderStatus = Enum.Parse<OrderStatus>(statusStr);
+
+                        DateOnly fetchdate = reader.IsDBNull(reader.GetOrdinal("fetchdate"))
+                            ? DateOnly.FromDateTime(DateTime.Today.AddDays(1))
+                            : DateOnly.FromDateTime(reader.GetDateTime(reader.GetOrdinal("fetchdate")));
+
+                        Order order = new Order(
+                            reader.GetInt32(reader.GetOrdinal("OrderId")),
+                            orderStatus,
+                            reader.GetInt32(reader.GetOrdinal("boxes")),
+                            client,
+                            store,
+                            timeslot,
+                            new List<OrderLine>(),
+                            fetchdate
+                        );
+
+                        orders.Add(order);
+                    }
+                }
+            }
+            return orders;
+        }
+
+        public async Task<bool> FinalizePreparationAsync(int orderId, int boxesUsed)
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand cmd = new SqlCommand(
+                    "UPDATE dbo.Order_ SET status = 'Prepared', boxes = @boxes WHERE OrderId = @orderId",
+                    connection);
+
+                cmd.Parameters.AddWithValue("@boxes", boxesUsed);
+                cmd.Parameters.AddWithValue("@orderId", orderId);
+                await connection.OpenAsync();
+
+                int result = await cmd.ExecuteNonQueryAsync();
+                return result > 0;
+            }
         }
 
     }

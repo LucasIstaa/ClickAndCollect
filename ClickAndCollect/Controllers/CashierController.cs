@@ -2,6 +2,7 @@
 using ClickAndCollect.Models;
 using ClickAndCollect.Models.Classes;
 using ClickAndCollect.Models.DALInterfaces;
+using ClickAndCollect.Models.Classes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClickAndCollect.Controllers

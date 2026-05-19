@@ -16,4 +16,6 @@ public interface IOrderDAL
     Task<bool> SetBoxesReturnedAsync(int orderId, int nbBoxes);
     Task<decimal> CalculateFinalPriceAsync(int orderId, int boxesReturned);
     Task<bool> AddOrderlinesAsync(List<OrderLine> lines);
+    Task<List<Order>> GetTomorrowOrdersByStoreAsync(int storeId);
+    Task<bool> FinalizePreparationAsync(int orderId, int boxesUsed);
 }
