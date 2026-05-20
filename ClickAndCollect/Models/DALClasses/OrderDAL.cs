@@ -171,7 +171,7 @@ namespace ClickAndCollect.Models.DALClasses
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 SqlCommand cmd = new SqlCommand(
-                    @"SELECT o.status, o.boxes, o.StoreId, o.TimeslotId, o.fetchdate,
+                    @"SELECT o.status, o.boxes, o.StoreId, o.TimeslotId, o.fetchdate,o.UserId,
                       t.start_, t.end_
                       FROM dbo.Order_ o
                       JOIN dbo.Timeslot t ON o.TimeslotId = t.TimeslotId
@@ -184,7 +184,8 @@ namespace ClickAndCollect.Models.DALClasses
                 {
                     if (await reader.ReadAsync())
                     {
-                        Client cl = new Client(id, null, null, null, null, null, 0, null, null, 0);
+                        int uid = reader.GetInt32(reader.GetOrdinal("UserId"));
+                        Client cl = new Client(uid, null, null, null, null, null, 0, null, null, 0);
                         int boxes = reader.GetInt32(reader.GetOrdinal("boxes"));
                         Enum.TryParse(reader.GetString(reader.GetOrdinal("status")), true, out OrderStatus status);
                         int storeid = reader.GetInt32(reader.GetOrdinal("StoreId"));
@@ -316,10 +317,29 @@ namespace ClickAndCollect.Models.DALClasses
             throw new NotImplementedException();
         }
 
-        public Task<bool> UpdateOrderAsync(Order o)
+        public async Task<bool> UpdateOrderAsync(Order o)
         {
-            throw new NotImplementedException();
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("UPDATE dbo.Order_ SET status = @status,boxes = @boxes,"
+                    +"StoreId = @storeId,TimeslotId = @timeslotId,UserId = @userId,fetchdate = @fetchdate WHERE OrderId = @orderId",conn);
+
+                cmd.Parameters.AddWithValue("@status", o.Status.ToString());
+                cmd.Parameters.AddWithValue("@boxes", o.BoxesInvolved);
+                cmd.Parameters.AddWithValue("@storeId", o.Store.StoreId);
+                cmd.Parameters.AddWithValue("@timeslotId", o.Timeslot.TimeslotId);
+                cmd.Parameters.AddWithValue("@userId", o.Client.UserId);
+                cmd.Parameters.AddWithValue("@fetchdate", o.Fetchdate);
+                cmd.Parameters.AddWithValue("@orderId", o.OrderId);
+
+                await conn.OpenAsync();
+
+                int rows = await cmd.ExecuteNonQueryAsync();
+
+                return rows > 0;
+            }
         }
+
 
         public async Task<bool> AddOrderlinesAsync(List<OrderLine> lines)
         {
@@ -331,9 +351,8 @@ namespace ClickAndCollect.Models.DALClasses
 
                 foreach (OrderLine line in lines)
                 {
-                    SqlCommand cmd = new SqlCommand(
-                        "INSERT INTO Order_line (OrderId, ProductId, Quantity) " +
-                        "VALUES (@oid, @pid, @qty)", conn);
+                    SqlCommand cmd = new SqlCommand("INSERT INTO Order_line (OrderId, ProductId, Quantity) " +
+                    "VALUES (@oid, @pid, @qty)", conn);
 
                     cmd.Parameters.AddWithValue("oid", line.Order.OrderId);
                     cmd.Parameters.AddWithValue("pid", line.Product.ProductId);

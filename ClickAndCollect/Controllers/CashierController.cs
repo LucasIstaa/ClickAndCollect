@@ -60,15 +60,18 @@ namespace ClickAndCollect.Controllers
         public async Task<IActionResult> SubmitBoxes(int orderId, int boxesReturned)
         {
 
-            await Order.SetBoxesReturnedAsync(orderDAL,orderId, boxesReturned);
-
-            decimal finalPrice = await Order.CalculateFinalPriceAsync(orderDAL,orderId, boxesReturned);
-
             Order? order = await Order.GetOrderAsync(orderDAL, orderId);
-            ViewBag.Step = "ShowPrice";
-            ViewBag.FinalPrice = finalPrice;
+            order.BoxesInvolved = order.BoxesInvolved - boxesReturned;
 
-            return View("FinalizeOrder", order);
+            if (await Order.UpdateOrder(orderDAL, order)) 
+            {
+                ViewBag.Step = "ShowPrice";
+                ViewBag.FinalPrice = order.TotalPrice();
+
+                return View("FinalizeOrder", order);
+            }
+
+            return RedirectToAction("Logout", "Account");
         }
 
         [RoleFilter("Cashier")]

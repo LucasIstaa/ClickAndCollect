@@ -1,5 +1,6 @@
 ﻿
 
+using System.ComponentModel.Design;
 using System.Numerics;
 
 namespace ClickAndCollect.Models.Classes
@@ -174,6 +175,7 @@ namespace ClickAndCollect.Models.Classes
                 tot = tot + (line.Quantity * line.Product.Price);
             }
 
+            tot = tot + (boxesInvolved * 5.95m);
 
             return tot;
         }
@@ -216,6 +218,11 @@ namespace ClickAndCollect.Models.Classes
         public static async Task<List<Order>> GetTodayOrdersByStoreAsync(IOrderDAL dal ,int storeId) 
         {
             return await dal.GetTodayOrdersByStoreAsync(storeId);
+        }
+
+        public static async Task<bool> UpdateOrder(IOrderDAL dal, Order o)
+        {
+            return await dal.UpdateOrderAsync(o);
         }
     }
 }

@@ -72,9 +72,15 @@ namespace ClickAndCollect.Controllers
         public async Task<IActionResult> ConfirmPreparation(int orderId, int boxesUsed)
         {
 
-            await Order.FinalizePreparationAsync(orderDAL ,orderId, boxesUsed);
+            Order? order = await Order.GetOrderAsync(orderDAL, orderId);
+            order.BoxesInvolved = order.BoxesInvolved + boxesUsed;
 
-            return RedirectToAction("CheckTomorrowOrders");
+            if (await Order.UpdateOrder(orderDAL, order))
+            {
+                return RedirectToAction("CheckTomorrowOrders");
+            }
+
+            return RedirectToAction("Logout", "Account");
         }
     }
 }
