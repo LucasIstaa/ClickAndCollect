@@ -13,10 +13,8 @@ else
             <tr>
                 <th>Order ID</th>
                 <th>Status</th>
-                <th>Boxes</th>
                 <th>Pickup Date</th>
                 <th>Timeslot</th>
-                <th>Store</th>
                 <th>Details</th>
             </tr>
         </thead>
@@ -27,10 +25,8 @@ else
                 <tr>
                     <td>@order.OrderId</td>
                     <td>@order.Status</td>
-                    <td>@order.BoxesInvolved</td>
-                    <td>@order.Fetchdate.ToString("yyyy-MM-dd")</td>
+                    <td>@order.Fetchdate.ToString("dd-MM-yyyy")</td>
                     <td>@order.Timeslot.Start - @order.Timeslot.End</td>
-                    <td>@order.Store.StoreId</td>
                     <td>
                         <a asp-controller="Order"
                            asp-action="OrderDetails"

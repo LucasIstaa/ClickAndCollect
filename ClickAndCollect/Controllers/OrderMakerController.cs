@@ -1,4 +1,5 @@
-﻿using ClickAndCollect.Models.Classes;
+﻿using ClickAndCollect.Filters;
+using ClickAndCollect.Models.Classes;
 using ClickAndCollect.Models.DALInterfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,13 +19,9 @@ namespace ClickAndCollect.Controllers
             return RedirectToAction("CheckTomorrowOrders");
         }
 
+        [RoleFilter("OrderMaker")]
         public async Task<IActionResult> CheckTomorrowOrders()
         {
-            string? role = HttpContext.Session.GetString("Role");
-            if (role != "OrderMaker")
-            {
-                return RedirectToAction("Login", "Account");
-            }
 
             int? storeId = HttpContext.Session.GetInt32("StoreId");
             if (storeId == null)
@@ -32,7 +29,7 @@ namespace ClickAndCollect.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
-            List<Order> orders = await orderDAL.GetTomorrowOrdersByStoreAsync(storeId.Value);
+            List<Order> orders = await Order.GetTomorrowOrdersByStoreAsync(orderDAL, storeId.Value);
 
             if (orders.Count == 0)
             {
@@ -42,34 +39,26 @@ namespace ClickAndCollect.Controllers
             return View("CheckTomorrowOrders", orders);
         }
 
+        [RoleFilter("OrderMaker")]
         public async Task<IActionResult> ViewOrderDetails(int orderId)
         {
-            string? role = HttpContext.Session.GetString("Role");
-            if (role != "OrderMaker")
-            {
-                return RedirectToAction("Login", "Account");
-            }
 
-            Order? order = await orderDAL.GetOrderByIdAsync(orderId);
+            Order? order = await Order.GetOrderAsync(orderDAL, orderId);
             if (order == null)
             {
                 return RedirectToAction("CheckTomorrowOrders");
             }
 
-            order.Orderlines = await orderDAL.GetOrderlinesAsync(orderId);
+            order.Orderlines = await Order.GetOrderlinesAsync(orderDAL,orderId);
 
             return View("ViewOrderDetails", order);
         }
 
+        [RoleFilter("OrderMaker")]
         public async Task<IActionResult> FinalizePreparation(int orderId)
         {
-            string? role = HttpContext.Session.GetString("Role");
-            if (role != "OrderMaker")
-            {
-                return RedirectToAction("Login", "Account");
-            }
 
-            Order? order = await orderDAL.GetOrderByIdAsync(orderId);
+            Order? order = await Order.GetOrderAsync(orderDAL, orderId);
             if (order == null)
             {
                 return RedirectToAction("CheckTomorrowOrders");
@@ -78,16 +67,12 @@ namespace ClickAndCollect.Controllers
             return View("FinalizePreparation", order);
         }
 
+        [RoleFilter("OrderMaker")]
         [HttpPost]
         public async Task<IActionResult> ConfirmPreparation(int orderId, int boxesUsed)
         {
-            string? role = HttpContext.Session.GetString("Role");
-            if (role != "OrderMaker")
-            {
-                return RedirectToAction("Login", "Account");
-            }
 
-            await orderDAL.FinalizePreparationAsync(orderId, boxesUsed);
+            await Order.FinalizePreparationAsync(orderDAL ,orderId, boxesUsed);
 
             return RedirectToAction("CheckTomorrowOrders");
         }

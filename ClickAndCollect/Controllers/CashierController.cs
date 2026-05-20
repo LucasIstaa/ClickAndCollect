@@ -24,11 +24,6 @@ namespace ClickAndCollect.Controllers
         [RoleFilter("Cashier")]
         public async Task<IActionResult> ConsultTodayClientList()
         {
-            string? role = HttpContext.Session.GetString("Role");
-            if (role != "Cashier")
-            {
-                return RedirectToAction("Login", "Account");
-            }
 
             int? storeId = HttpContext.Session.GetInt32("StoreId");
             if (storeId == null)
@@ -36,7 +31,7 @@ namespace ClickAndCollect.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
-            List<Order> orders = await orderDAL.GetTodayOrdersByStoreAsync(storeId.Value);
+            List<Order> orders = await Order.GetTodayOrdersByStoreAsync(orderDAL,storeId.Value);
 
             if (orders.Count == 0)
             {
@@ -49,13 +44,8 @@ namespace ClickAndCollect.Controllers
         [RoleFilter("Cashier")]
         public async Task<IActionResult> FinalizeOrder(int orderId)
         {
-            string? role = HttpContext.Session.GetString("Role");
-            if (role != "Cashier")
-            {
-                return RedirectToAction("Login", "Account");
-            }
 
-            Order? order = await orderDAL.GetOrderByIdAsync(orderId);
+            Order? order = await Order.GetOrderAsync(orderDAL,orderId);
             if (order == null)
             {
                 return RedirectToAction("ConsultTodayClientList");
@@ -65,38 +55,29 @@ namespace ClickAndCollect.Controllers
             return View("FinalizeOrder", order);
         }
 
+        [RoleFilter("Cashier")]
         [HttpPost]
         public async Task<IActionResult> SubmitBoxes(int orderId, int boxesReturned)
         {
-            string? role = HttpContext.Session.GetString("Role");
-            if (role != "Cashier")
-            {
-                return RedirectToAction("Login", "Account");
-            }
 
-            await orderDAL.SetBoxesReturnedAsync(orderId, boxesReturned);
+            await Order.SetBoxesReturnedAsync(orderDAL,orderId, boxesReturned);
 
-            decimal finalPrice = await orderDAL.CalculateFinalPriceAsync(orderId, boxesReturned);
+            decimal finalPrice = await Order.CalculateFinalPriceAsync(orderDAL,orderId, boxesReturned);
 
-            Order? order = await orderDAL.GetOrderByIdAsync(orderId);
+            Order? order = await Order.GetOrderAsync(orderDAL, orderId);
             ViewBag.Step = "ShowPrice";
             ViewBag.FinalPrice = finalPrice;
 
             return View("FinalizeOrder", order);
         }
 
+        [RoleFilter("Cashier")]
         [HttpPost]
         public async Task<IActionResult> ConfirmPayment(int orderId)
         {
-            string? role = HttpContext.Session.GetString("Role");
-            if (role != "Cashier")
-            {
-                return RedirectToAction("Login", "Account");
-            }
+            await Order.FinalizeOrderAsync(orderDAL,orderId);
 
-            await orderDAL.FinalizeOrderAsync(orderId);
-
-            Order? order = await orderDAL.GetOrderByIdAsync(orderId);
+            Order? order = await Order.GetOrderAsync(orderDAL, orderId);
             ViewBag.Step = "Finalized";
 
             return View("FinalizeOrder", order);

@@ -1,5 +1,7 @@
 ﻿
 
+using System.Numerics;
+
 namespace ClickAndCollect.Models.Classes
 {
     public class Order
@@ -25,7 +27,7 @@ namespace ClickAndCollect.Models.Classes
             set { status = value; }
         }
 
-        public DateOnly Fetchdate 
+        public DateOnly Fetchdate
         {
             get { return fetchdate; }
             set { fetchdate = value; }
@@ -43,52 +45,52 @@ namespace ClickAndCollect.Models.Classes
             set { boxesInvolved = value; }
         }
 
-        public Client Client 
+        public Client Client
         {
             get { return client; }
-            set {  client = value; }
+            set { client = value; }
         }
 
-        public Timeslot Timeslot 
+        public Timeslot Timeslot
         {
             get { return timeslot; }
             set { timeslot = value; }
         }
 
-        public List<OrderLine> Orderlines 
+        public List<OrderLine> Orderlines
         {
             get { return orderlines; }
             set { orderlines = value; }
         }
 
-        public void AddOrderLine(OrderLine line) 
+        public void AddOrderLine(OrderLine line)
         {
-            if (!orderlines.Contains(line)) 
+            if (!orderlines.Contains(line))
             {
                 this.orderlines.Add(line);
             }
         }
 
-        public Order(OrderStatus status, int boxesInvolved, Client client, Product product, int quantity, Store store, Timeslot slot,DateOnly fetchdate)
+        public Order(OrderStatus status, int boxesInvolved, Client client, Product product, int quantity, Store store, Timeslot slot, DateOnly fetchdate)
         {
             Status = status;
             BoxesInvolved = boxesInvolved;
             client.AddOrder(this);
             Client = client;
-            AddOrderLine(new OrderLine(quantity,product,this));
+            AddOrderLine(new OrderLine(quantity, product, this));
             Store = store;
             store.AddOrder(this);
             Fetchdate = fetchdate;
 
-            if (!slot.AddOrder(this)) 
+            if (!slot.AddOrder(this))
             {
                 throw new InvalidOperationException("Ce créneau horaire est complet (10 commandes max).");
             }
-            
+
             Timeslot = slot;
         }
 
-        public Order(int orderid,OrderStatus status, int boxesInvolved, Client client, Product product, int quantity, Store store, Timeslot slot, DateOnly fetchdate) : this(status,boxesInvolved,client,product,quantity, store, slot,fetchdate)
+        public Order(int orderid, OrderStatus status, int boxesInvolved, Client client, Product product, int quantity, Store store, Timeslot slot, DateOnly fetchdate) : this(status, boxesInvolved, client, product, quantity, store, slot, fetchdate)
         {
             this.OrderId = orderid;
         }
@@ -133,7 +135,7 @@ namespace ClickAndCollect.Models.Classes
             Timeslot = slot;
         }
 
-        public Order(int id) 
+        public Order(int id)
         {
             OrderId = id;
         }
@@ -153,32 +155,67 @@ namespace ClickAndCollect.Models.Classes
             return OrderId.GetHashCode();
         }
 
-        public static async Task<List<Order>> GetClientOrdersAsync(IOrderDAL dal, int clientid) 
+        public static async Task<List<Order>> GetClientOrdersAsync(IOrderDAL dal, int clientid)
         {
             return await dal.GetClientOrdersAsync(clientid);
         }
 
-        public static async Task<Order> GetOrderAsync(IOrderDAL dal, int id) 
+        public static async Task<Order> GetOrderAsync(IOrderDAL dal, int id)
         {
             return await dal.GetOrderAsync(id);
         }
 
-        public Decimal TotalPrice() 
+        public Decimal TotalPrice()
         {
             Decimal tot = 0;
 
-            foreach (OrderLine line in Orderlines) 
+            foreach (OrderLine line in Orderlines)
             {
                 tot = tot + (line.Quantity * line.Product.Price);
             }
 
+
             return tot;
         }
 
-        public static async Task<bool> AddOrderAsync(IOrderDAL dal, Order o) 
+        public static async Task<bool> AddOrderAsync(IOrderDAL dal, Order o)
         {
             return await dal.AddOrderAsync(o);
         }
 
+        public static async Task<bool> FinalizePreparationAsync(IOrderDAL dal, int orderId, int boxesUsed) 
+        {
+            return await dal.FinalizePreparationAsync(orderId, boxesUsed);
+        }
+
+        public static async Task<List<Order>> GetTomorrowOrdersByStoreAsync(IOrderDAL dal ,int storeId) 
+        {
+            return await dal.GetTomorrowOrdersByStoreAsync(storeId);
+        }
+
+        public static async Task<bool> FinalizeOrderAsync(IOrderDAL dal ,int orderId) 
+        {
+            return await dal.FinalizeOrderAsync(orderId);
+        }
+
+        public static async Task<decimal> CalculateFinalPriceAsync(IOrderDAL dal ,int orderId, int boxesReturned) 
+        {
+            return await dal.CalculateFinalPriceAsync(orderId, boxesReturned);
+        }
+
+        public static async Task<bool> SetBoxesReturnedAsync(IOrderDAL dal,int orderId, int nbBoxes) 
+        {
+            return await dal.SetBoxesReturnedAsync(orderId, nbBoxes);
+        }
+
+        public static async Task<List<OrderLine>> GetOrderlinesAsync(IOrderDAL dal,int id) 
+        {
+            return await dal.GetOrderlinesAsync(id);
+        }
+
+        public static async Task<List<Order>> GetTodayOrdersByStoreAsync(IOrderDAL dal ,int storeId) 
+        {
+            return await dal.GetTodayOrdersByStoreAsync(storeId);
+        }
     }
 }
