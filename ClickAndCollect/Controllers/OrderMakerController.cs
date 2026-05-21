@@ -74,6 +74,7 @@ namespace ClickAndCollect.Controllers
 
             Order? order = await Order.GetOrderAsync(orderDAL, orderId);
             order.BoxesInvolved = order.BoxesInvolved + boxesUsed;
+            order.Status = OrderStatus.Prepared;
 
             if (await Order.UpdateOrder(orderDAL, order))
             {
