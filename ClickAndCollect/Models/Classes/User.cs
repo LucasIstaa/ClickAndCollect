@@ -1,5 +1,4 @@
 ﻿using ClickAndCollect.Models.DALInterfaces;
-using System.Data;
 
 namespace ClickAndCollect.Models.Classes
 {

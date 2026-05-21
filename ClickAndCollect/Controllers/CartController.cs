@@ -23,16 +23,6 @@ namespace ClickAndCollect.Controllers
         [RoleFilter("Client")]
         public IActionResult Manage()
         {
-            string? role = HttpContext.Session.GetString("Role");
-            if (role == "Cashier")
-            {
-                return RedirectToAction("ConsultTodayClientList", "Cashier");
-            }
-            if (role == "OrderMaker")
-            {
-                return RedirectToAction("CheckTomorrowOrders", "OrderMaker");
-            }
-
             Cart c = HttpContext.Session.GetObject<Cart>("cart");
             List<CartLine> cl;
 

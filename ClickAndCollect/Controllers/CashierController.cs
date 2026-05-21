@@ -1,9 +1,7 @@
 ﻿using ClickAndCollect.Filters;
-using ClickAndCollect.Models;
-using ClickAndCollect.Models.Classes;
-using ClickAndCollect.Models.DALInterfaces;
 using ClickAndCollect.Models.Classes;
 using Microsoft.AspNetCore.Mvc;
+using ClickAndCollect.Models.DALInterfaces;
 
 namespace ClickAndCollect.Controllers
 {

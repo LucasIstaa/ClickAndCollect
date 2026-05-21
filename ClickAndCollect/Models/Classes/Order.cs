@@ -1,7 +1,4 @@
-﻿
-
-using System.ComponentModel.Design;
-using System.Numerics;
+﻿using ClickAndCollect.Models.DALInterfaces;
 
 namespace ClickAndCollect.Models.Classes
 {
@@ -185,37 +182,22 @@ namespace ClickAndCollect.Models.Classes
             return await dal.AddOrderAsync(o);
         }
 
-        public static async Task<bool> FinalizePreparationAsync(IOrderDAL dal, int orderId, int boxesUsed) 
-        {
-            return await dal.FinalizePreparationAsync(orderId, boxesUsed);
-        }
-
-        public static async Task<List<Order>> GetTomorrowOrdersByStoreAsync(IOrderDAL dal ,int storeId) 
+        public static async Task<List<Order>> GetTomorrowOrdersByStoreAsync(IOrderDAL dal, int storeId)
         {
             return await dal.GetTomorrowOrdersByStoreAsync(storeId);
         }
 
-        public static async Task<bool> FinalizeOrderAsync(IOrderDAL dal ,int orderId) 
+        public static async Task<bool> FinalizeOrderAsync(IOrderDAL dal, int orderId)
         {
             return await dal.FinalizeOrderAsync(orderId);
         }
 
-        public static async Task<decimal> CalculateFinalPriceAsync(IOrderDAL dal ,int orderId, int boxesReturned) 
-        {
-            return await dal.CalculateFinalPriceAsync(orderId, boxesReturned);
-        }
-
-        public static async Task<bool> SetBoxesReturnedAsync(IOrderDAL dal,int orderId, int nbBoxes) 
-        {
-            return await dal.SetBoxesReturnedAsync(orderId, nbBoxes);
-        }
-
-        public static async Task<List<OrderLine>> GetOrderlinesAsync(IOrderDAL dal,int id) 
+        public static async Task<List<OrderLine>> GetOrderlinesAsync(IOrderDAL dal, int id)
         {
             return await dal.GetOrderlinesAsync(id);
         }
 
-        public static async Task<List<Order>> GetTodayOrdersByStoreAsync(IOrderDAL dal ,int storeId) 
+        public static async Task<List<Order>> GetTodayOrdersByStoreAsync(IOrderDAL dal, int storeId)
         {
             return await dal.GetTodayOrdersByStoreAsync(storeId);
         }

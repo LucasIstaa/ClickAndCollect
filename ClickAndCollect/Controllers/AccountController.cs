@@ -8,7 +8,7 @@ namespace ClickAndCollect.Controllers
     {
         private readonly IUserDAL userDAL;
 
-        public AccountController(IUserDAL dal, IOrderDAL odal)
+        public AccountController(IUserDAL dal)
         {
             this.userDAL = dal;
         }
