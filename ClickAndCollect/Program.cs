@@ -6,7 +6,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 string? connectionString = builder.Configuration.GetConnectionString("default");
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+    options.Filters.Add(new Microsoft.AspNetCore.Mvc.AutoValidateAntiforgeryTokenAttribute()));
 builder.Services.AddTransient<IStoreDAL>(storeDAL => new StoreDAL(connectionString));
 builder.Services.AddTransient<IProductDAL>(productDAL => new ProductDAL(connectionString));
 builder.Services.AddTransient<ICategoryDAL>(categoryDAL => new CategoryDAL(connectionString));

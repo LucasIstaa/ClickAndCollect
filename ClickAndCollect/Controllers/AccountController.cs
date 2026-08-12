@@ -57,7 +57,7 @@ namespace ClickAndCollect.Controllers
 
             if (userId == null)
             {
-                ViewBag.Error = "Username doesn't exist";
+                ViewBag.Error = "Invalid username or password";
                 return View();
             }
 
@@ -65,11 +65,17 @@ namespace ClickAndCollect.Controllers
 
             if (!validPassword)
             {
-                ViewBag.Error = "Incorrect password";
+                ViewBag.Error = "Invalid username or password";
                 return View();
             }
 
             User? user = await Models.Classes.User.GetUser(userId.Value, userDAL);
+
+            if (user == null)
+            {
+                ViewBag.Error = "Invalid username or password";
+                return View();
+            }
 
             string role = user.GetRole();
 
@@ -106,16 +112,7 @@ namespace ClickAndCollect.Controllers
                 return View();
             }
 
-            List<string> errors = new List<string>();
-
-            if (password.Length < 8 || password.Length > 32)
-                errors.Add("Password must be between 8 and 32 characters.");
-            if (!password.Any(char.IsLetter) || !password.Any(char.IsDigit))
-                errors.Add("Password must contain at least one letter and one number.");
-            if (firstname.Length < 3 || firstname.Length > 255 || firstname.Any(char.IsDigit))
-                errors.Add("First name must be 3-255 characters with no digits.");
-            if (lastname.Length < 3 || lastname.Length > 255 || lastname.Any(char.IsDigit))
-                errors.Add("Last name must be 3-255 characters with no digits.");
+            List<string> errors = ClickAndCollect.Models.Classes.User.ValidateRegistrationData(password, firstname, lastname);
 
             if (errors.Count > 0)
             {
