@@ -172,7 +172,7 @@ namespace ClickAndCollect.Models.Classes
                 tot = tot + (line.Quantity * line.Product.Price);
             }
 
-            tot = tot + (boxesInvolved * 5.95m);
+            tot = tot + (boxesInvolved * 5.95m) + 5.95m;
 
             return tot;
         }

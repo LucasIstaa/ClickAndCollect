@@ -1201,23 +1201,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\geoff\\.nuget\\packages\\": {},
+    "C:\\Users\\lucas\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\geoff\\OneDrive\\Bureau\\Files\\Info\\BAC 2\\Q2\\Application informatique 2\\Projet git\\ClickAndCollect\\ClickAndCollect.csproj",
+      "projectUniqueName": "D:\\App-code\\ClickAndCollect\\ClickAndCollect\\ClickAndCollect\\ClickAndCollect.csproj",
       "projectName": "ClickAndCollect",
-      "projectPath": "C:\\Users\\geoff\\OneDrive\\Bureau\\Files\\Info\\BAC 2\\Q2\\Application informatique 2\\Projet git\\ClickAndCollect\\ClickAndCollect.csproj",
-      "packagesPath": "C:\\Users\\geoff\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\geoff\\OneDrive\\Bureau\\Files\\Info\\BAC 2\\Q2\\Application informatique 2\\Projet git\\ClickAndCollect\\obj\\",
+      "projectPath": "D:\\App-code\\ClickAndCollect\\ClickAndCollect\\ClickAndCollect\\ClickAndCollect.csproj",
+      "packagesPath": "C:\\Users\\lucas\\.nuget\\packages\\",
+      "outputPath": "D:\\App-code\\ClickAndCollect\\ClickAndCollect\\ClickAndCollect\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\geoff\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\lucas\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
