@@ -18,8 +18,6 @@ out/
 packages/
 *.nuget.props
 *.nuget.targets
-
-# Empêche la restauration locale
 project.lock.json
 project.assets.json
 
@@ -68,7 +66,7 @@ Desktop.ini
 publish/
 dist/
 
-## --- Entity Framework (si utilisé) ---
+## --- Entity Framework ---
 Migrations/
 
 ## --- Secrets ---
@@ -77,37 +75,15 @@ secrets.json
 *.pfx
 
 ## --- ADO.NET specifics ---
-# Fichiers de connexion générés
 *.mdf
 *.ldf
 *.dbmdl
-
-# Dataset designer
 *.xsd
 *.xss
 *.xsc
 *.xsd.cs
-
-# TableAdapters
 *.Designer.cs
 *.resx
-/ClickAndCollect/obj/Debug/net8.0/ClickAndCollect.AssemblyInfo.cs
-/ClickAndCollect/obj/Debug/net8.0/ClickAndCollect.AssemblyInfoInputs.cache
-/ClickAndCollect/obj/Debug/net8.0/ClickAndCollect.RazorAssemblyInfo.cs
-/ClickAndCollect/obj/Debug/net8.0/rpswa.dswa.cache.json
-/ClickAndCollect/obj/project.nuget.cache
-/ClickAndCollect/obj/project.assets.json
-/ClickAndCollect/obj/ClickAndCollect.csproj.nuget.g.props
-/ClickAndCollect/obj/ClickAndCollect.csproj.nuget.dgspec.json
-/ClickAndCollect/obj/Debug/net8.0/rpswa.dswa.cache.json
-/ClickAndCollect/obj/Debug/net8.0/ClickAndCollect.GeneratedMSBuildEditorConfig.editorconfig
-/ClickAndCollect/obj/Debug/net8.0/ClickAndCollect.assets.cache
-/ClickAndCollect/obj/Debug/net8.0/ClickAndCollect.AssemblyInfoInputs.cache
-/ClickAndCollect/obj/Debug/net8.0/ClickAndCollect.AssemblyInfo.cs
-/ClickAndCollect/obj/Debug/net8.0/ClickAndCollect.RazorAssemblyInfo.cs
-/ClickAndCollect/obj/Debug/net8.0/rpswa.dswa.cache.json
-/ClickAndCollect/obj/Debug/net8.0/ClickAndCollect.GeneratedMSBuildEditorConfig.editorconfig
-/ClickAndCollect/obj/Debug/net8.0/ClickAndCollect.AssemblyInfoInputs.cache
-/ClickAndCollect/obj/Debug/net8.0/ClickAndCollect.AssemblyInfo.cs
-/.gitignore
-/.gitignore
+
+## --- ClickAndCollect specific (inutile si obj/ est ignoré, donc supprimé) ---
+# Toutes les entrées /ClickAndCollect/obj/... supprimées car obj/ est déjà ignoré globalement
