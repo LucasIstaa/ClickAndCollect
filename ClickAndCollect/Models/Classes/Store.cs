@@ -106,7 +106,39 @@ namespace ClickAndCollect.Models.Classes
             }
         }
 
-        public Store() { }
+        public void RemoveOrder(Order order)
+        {
+            if (orders.Contains(order))
+                orders.Remove(order);
+            else
+                throw new ArgumentException("Order not found in store");
+        }
+
+        public void RemoveTimeslot(Timeslot slot)
+        {
+            if (timeslots.Contains(slot))
+                timeslots.Remove(slot);
+            else
+                throw new ArgumentException("Timeslot not found in store");
+        }
+
+        public void RemoveOrdermaker(OrderMaker maker)
+        {
+            if (ordermakers.Contains(maker))
+                ordermakers.Remove(maker);
+            else
+                throw new ArgumentException("Ordermaker not found in store");
+        }
+
+        public void RemoveCashier(Cashier cashier)
+        {
+            if (cashiers.Contains(cashier))
+                cashiers.Remove(cashier);
+            else
+                throw new ArgumentException("Cashier not found in store");
+        }
+
+        //Constructeurs
 
         public Store(string phonenumber, string name, int postalcode, string cityname, string streetname, int housenumber, TimeOnly start, TimeOnly end)
         {
@@ -119,26 +151,9 @@ namespace ClickAndCollect.Models.Classes
             AddTimeslot(new Timeslot(start, end, this));
         }
 
-        public Store(int storeid, string phonenumber, string name, int postalcode, string cityname, string streetname, int housenumber)
+        public Store(int storeid, string phonenumber, string name, int postalcode, string cityname, string streetname, int housenumber, TimeOnly start, TimeOnly end) : this(phonenumber, name, postalcode, cityname, streetname, housenumber, start, end)
         {
-            StoreId = storeid;
-            PhoneNumber = phonenumber;
-            Name = name;
-            PostalCode = postalcode;
-            CityName = cityname;
-            StreetName = streetname;
-            HouseNumber = housenumber;
-        }
-
-        public Store(int storeid, string phonenumber, string name, int postalcode, string cityname, string streetname, int housenumber, TimeOnly start, TimeOnly end)
-        : this(phonenumber, name, postalcode, cityname, streetname, housenumber,start,end)
-        {
-            StoreId = storeid;
-        }
-
-        public Store(int storeid) 
-        {
-            this.StoreId = storeid;
+            this.storeid = storeid;
         }
 
         //Méthodes
@@ -160,5 +175,15 @@ namespace ClickAndCollect.Models.Classes
             return await dal.GetStoreAsync(id);
         }
 
+        public override bool Equals(object? obj)
+        {
+            return obj is Store store &&
+                   storeid == store.storeid;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(storeid);
+        }
     }
 }

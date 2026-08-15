@@ -63,11 +63,21 @@
             }
         }
 
+        public void RemoveOrder(Order o)
+        {
+            if (orders.Contains(o))
+                orders.Remove(o);
+            else
+                throw new ArgumentException("Order not found in client's list");
+        }
+
         public override string GetRole()
         {
             return "Client";
         }
 
+
+        //Constructeur
 
         public Client(string username, string password, string firstname,string lastname, string phonenumber,
             int postalcode, string cityname, string streetname, int houseumber) : base(username, password)
@@ -95,6 +105,7 @@
             this.orders = new List<Order>();
         }
 
+        //Méthodes
 
     }
 }

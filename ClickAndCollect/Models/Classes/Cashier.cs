@@ -10,15 +10,21 @@
             set { store = value; }
         }
 
+        //Constructeur
+
         public Cashier(string username, string password, Store store) : base(username, password)
         {
             this.Store = store;
+            store.AddCashier(this);
         }
 
         public Cashier(int id, string username, string password, Store store) : base(id, username, password)
         {
             this.Store = store;
+            store.AddCashier(this);
         }
+
+        //Méthodes
 
         public override string GetRole()
         {

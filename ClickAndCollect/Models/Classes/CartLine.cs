@@ -1,8 +1,10 @@
 ﻿namespace ClickAndCollect.Models.Classes
 {
-    public class CartLine
+    public class CartLine: IDisposable
     {
         private int quantity;
+        private bool _disposed = false;
+        private Cart cart;
         private Product product;
 
         public int Quantity 
@@ -17,12 +19,19 @@
             set { product = value; }
         }
 
-        public CartLine() { }
+        public Cart Cart 
+        {
+            get { return cart; }
+            set { this.cart = value; }
 
-        public CartLine(int quantity, Product product) 
+        }
+
+        public CartLine(int quantity, Product product, Cart cart) 
         {
             this.Quantity = quantity;
             this.Product = product;
+            this.Cart = cart;
+            cart.AddCartline(this);
         }
 
         public override bool Equals(object? obj)
@@ -34,6 +43,21 @@
         public override int GetHashCode()
         {
             return HashCode.Combine(Product);
+        }
+
+        public void Dispose()
+        {
+            if (!_disposed) 
+            {
+                _disposed = true;
+                this.cart.Dispose();
+                GC.SuppressFinalize(this);
+            }
+        }
+
+        ~CartLine() 
+        {
+            Dispose();
         }
     }
 }

@@ -33,13 +33,12 @@ namespace ClickAndCollect.Models.Classes
             set { category = value; }
         }
 
-        public Product() { }
-
         public Product(String name, decimal price, Category cat) 
         {
             this.Name = name;
             this.Price = price;
             this.Category = cat;
+            cat.AddProduct(this);
         }
 
         public Product(int id,String name, decimal price,Category cat) : this(name,price,cat)

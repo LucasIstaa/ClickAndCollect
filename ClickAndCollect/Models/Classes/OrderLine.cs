@@ -1,9 +1,10 @@
 ﻿namespace ClickAndCollect.Models.Classes
 {
-    public class OrderLine
+    public class OrderLine : IDisposable
     {
         private int orderlineid;
         private int quantity;
+        private bool _disposed = false;
         private Product product;
         private Order order;
         public int OrderLineId
@@ -35,13 +36,7 @@
             this.quantity = quantity;
             this.Product = product;
             this.Order = order;
-        }
-
-        public OrderLine(int id, int quantity, Product product)
-        {
-            this.OrderLineId = id;
-            this.Quantity = quantity;
-            this.Product = product;
+            order.AddOrderLine(this);
         }
 
         public OrderLine(int id,int quantity, Product product, Order order) :this(quantity,product,order)
@@ -59,6 +54,21 @@
         public override int GetHashCode()
         {
             return HashCode.Combine(Product, Order);
+        }
+
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                _disposed = true;
+                this.order.Dispose();
+                GC.SuppressFinalize(this);
+            }
+        }
+
+        ~OrderLine() 
+        {
+            Dispose();
         }
     }
 }

@@ -30,7 +30,17 @@ namespace ClickAndCollect.Models.Classes
             }
         }
 
-        public Category() { }
+        public void RemoveProduct(Product pro)
+        {
+            if (products.Contains(pro))
+            {
+                products.Remove(pro);
+            }
+            else
+            {
+                throw new ArgumentException("Product not found in category");
+            }
+        }
 
         public Category(string name)
         {

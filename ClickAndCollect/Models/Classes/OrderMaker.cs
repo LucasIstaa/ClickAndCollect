@@ -13,11 +13,13 @@
         public OrderMaker( string username, string password, Store store) : base(username, password)
         {
             this.Store = store;
+            store.AddOrdermaker(this);
         }
 
         public OrderMaker(int id, string username, string password,Store store) : base(id, username, password)
         {
             this.Store = store;
+            store.AddOrdermaker(this);
         }
 
         public override string GetRole()
