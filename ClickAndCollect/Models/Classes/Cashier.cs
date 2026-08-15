@@ -20,6 +20,11 @@
             this.Store = store;
         }
 
+        public override string GetRole()
+        {
+            return "Cashier";
+        }
+
         public override bool Equals(object? obj)
         {
             return obj is Cashier cashier &&

@@ -1,4 +1,3 @@
-using ClickAndCollect.Models.DAL;
 using ClickAndCollect.Models.DALClasses;
 using ClickAndCollect.Models.DALInterfaces;
 

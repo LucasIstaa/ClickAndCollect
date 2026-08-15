@@ -1,5 +1,6 @@
 ﻿using ClickAndCollect.Models.Classes;
 using ClickAndCollect.Models.DALInterfaces;
+using ClickAndCollect.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClickAndCollect.Controllers
@@ -13,9 +14,9 @@ namespace ClickAndCollect.Controllers
             this.userDAL = dal;
         }
 
-        public IActionResult Index() 
+        public IActionResult Index()
         {
-            return View("Login");
+            return View("Login", new LoginViewModel());
         }
 
         public IActionResult Login()
@@ -28,10 +29,10 @@ namespace ClickAndCollect.Controllers
                     "Cashier" => RedirectToAction("ConsultTodayClientList", "Cashier"),
                     "OrderMaker" => RedirectToAction("CheckTomorrowOrders", "OrderMaker"),
                     "Client" => RedirectToAction("Browse", "Product"),
-                    _ => View()
+                    _ => View(new LoginViewModel())
                 };
             }
-            return View();
+            return View(new LoginViewModel());
         }
 
         public IActionResult Logout()
@@ -47,26 +48,31 @@ namespace ClickAndCollect.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            return View();
+            return View(new RegisterViewModel());
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(string username, string password)
+        public async Task<IActionResult> Login(LoginViewModel model)
         {
-            int? userId = await Models.Classes.User.GetByUsername(username, userDAL);
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            int? userId = await Models.Classes.User.GetByUsername(model.Username, userDAL);
 
             if (userId == null)
             {
                 ViewBag.Error = "Invalid username or password";
-                return View();
+                return View(model);
             }
 
-            bool validPassword = await Models.Classes.User.VerifyPassword(password, userId.Value, userDAL);
+            bool validPassword = await Models.Classes.User.VerifyPassword(model.Password, userId.Value, userDAL);
 
             if (!validPassword)
             {
                 ViewBag.Error = "Invalid username or password";
-                return View();
+                return View(model);
             }
 
             User? user = await Models.Classes.User.GetUser(userId.Value, userDAL);
@@ -74,7 +80,7 @@ namespace ClickAndCollect.Controllers
             if (user == null)
             {
                 ViewBag.Error = "Invalid username or password";
-                return View();
+                return View(model);
             }
 
             string role = user.GetRole();
@@ -102,27 +108,32 @@ namespace ClickAndCollect.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Register(string username, string password, string firstname, string lastname, string phonenumber, int postalcode, string cityname, string streetname, int housenumber)
+        public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            int? userId = await ClickAndCollect.Models.Classes.User.GetByUsername(username, userDAL);
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            int? userId = await ClickAndCollect.Models.Classes.User.GetByUsername(model.Username, userDAL);
 
             if (userId != null)
             {
                 ViewBag.Error = "Username already taken";
-                return View();
+                return View(model);
             }
 
-            List<string> errors = ClickAndCollect.Models.Classes.User.ValidateRegistrationData(password, firstname, lastname);
+            List<string> errors = ClickAndCollect.Models.Classes.User.ValidateRegistrationData(model.Password, model.Firstname, model.Lastname);
 
             if (errors.Count > 0)
             {
                 ViewBag.Errors = errors;
-                return View();
+                return View(model);
             }
 
             bool success = await ClickAndCollect.Models.Classes.User.CreateAccount(
-                username, password, firstname, lastname, phonenumber,
-                postalcode, cityname, streetname, housenumber, userDAL);
+                model.Username, model.Password, model.Firstname, model.Lastname, model.Phonenumber,
+                model.Postalcode, model.Cityname, model.Streetname, model.Housenumber, userDAL);
 
             if (success)
             {
@@ -130,7 +141,7 @@ namespace ClickAndCollect.Controllers
             }
 
             ViewBag.Error = "An error occurred while creating the account.";
-            return View();
+            return View(model);
         }
     }
 }

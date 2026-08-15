@@ -17,8 +17,10 @@ namespace ClickAndCollect.Models.Classes
         {
         }
 
+#pragma warning disable SYSLIB0051 // Constructeur requis par la convention [Serializable] classique, malgré l'obsolescence de l'API de sérialisation par formatteur.
         protected InvalidBoxesCountException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
+#pragma warning restore SYSLIB0051
     }
 }

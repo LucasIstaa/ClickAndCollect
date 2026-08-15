@@ -20,6 +20,11 @@
             this.Store = store;
         }
 
+        public override string GetRole()
+        {
+            return "OrderMaker";
+        }
+
         public override bool Equals(object? obj)
         {
             return obj is OrderMaker maker &&

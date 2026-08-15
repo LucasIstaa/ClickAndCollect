@@ -53,16 +53,7 @@ namespace ClickAndCollect.Models.Classes
             User? user = await dal.GetUserByIdAsync(userId);
             return user;
         }
-        public string GetRole()
-        {
-            return this switch
-            {
-                Client => "Client",
-                Cashier => "Cashier",
-                OrderMaker => "OrderMaker",
-                _ => "Unknown"
-            };
-        }
+        public abstract string GetRole();
 
         public static List<string> ValidateRegistrationData(string password, string firstname, string lastname)
         {

@@ -18,7 +18,7 @@
 @if (ViewBag.Step == "EnterBoxes")
 {
     <form method="post" asp-controller="Cashier" asp-action="SubmitBoxes">
-        <input type="hidden" name="orderId" value="@Model.OrderId" />
+        <input type="hidden" asp-for="OrderId" />
         <div class="mb-3">
             <label for="boxesReturned" class="form-label">Boxes returned by client</label>
             <input type="number" class="form-control" id="boxesReturned" name="boxesReturned" value="0" min="0" max="@Model.BoxesInvolved" />
@@ -35,7 +35,7 @@ else if (ViewBag.Step == "ShowPrice")
         <h4>Final price: @ViewBag.FinalPrice.ToString("0.00") €</h4>
     </div>
     <form method="post" asp-controller="Cashier" asp-action="ConfirmPayment">
-        <input type="hidden" name="orderId" value="@Model.OrderId" />
+        <input type="hidden" asp-for="OrderId" />
         <div class="d-flex justify-content-between">
             <a asp-controller="Cashier" asp-action="ConsultTodayClientList" class="btn btn-secondary">Back to today's orders list</a>
             <button type="submit" class="btn btn-success">Confirm payment</button>

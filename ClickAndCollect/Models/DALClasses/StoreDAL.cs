@@ -2,7 +2,7 @@
 using ClickAndCollect.Models.DALInterfaces;
 using Microsoft.Data.SqlClient;
 
-namespace ClickAndCollect.Models.DAL
+namespace ClickAndCollect.Models.DALClasses
 {
     public class StoreDAL : IStoreDAL
     {

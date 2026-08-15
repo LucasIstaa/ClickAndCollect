@@ -55,12 +55,17 @@
             set { cart = value; }
         }
 
-        public void AddOrder(Order o) 
+        public void AddOrder(Order o)
         {
             if (!this.orders.Contains(o))
             {
                 this.orders.Add(o);
             }
+        }
+
+        public override string GetRole()
+        {
+            return "Client";
         }
 
 
