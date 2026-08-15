@@ -48,20 +48,27 @@ namespace ClickAndCollect.Models.Classes
             bool valid = await dal.VerifyPasswordAsync(userId, password);
             return valid;
         }
-        public static async Task<User> GetUser(int userId, IUserDAL dal)
+        public static async Task<User?> GetUser(int userId, IUserDAL dal)
         {
             User? user = await dal.GetUserByIdAsync(userId);
             return user;
         }
-        public string GetRole()
+        public abstract string GetRole();
+
+        public static List<string> ValidateRegistrationData(string password, string firstname, string lastname)
         {
-            return this switch
-            {
-                Client => "Client",
-                Cashier => "Cashier",
-                OrderMaker => "OrderMaker",
-                _ => "Unknown"
-            };
+            List<string> errors = new List<string>();
+
+            if (password.Length < 12 || password.Length > 64)
+                errors.Add("Password must be between 12 and 64 characters.");
+            if (!password.Any(char.IsLetter) || !password.Any(char.IsDigit))
+                errors.Add("Password must contain at least one letter and one number.");
+            if (firstname.Length < 3 || firstname.Length > 255 || firstname.Any(char.IsDigit))
+                errors.Add("First name must be 3-255 characters with no digits.");
+            if (lastname.Length < 3 || lastname.Length > 255 || lastname.Any(char.IsDigit))
+                errors.Add("Last name must be 3-255 characters with no digits.");
+
+            return errors;
         }
 
         public static async Task<bool> CreateAccount(string username, string password, string firstname, string lastname, string phonenumber, int postalcode, string cityname, string streetname, int housenumber, IUserDAL dal)

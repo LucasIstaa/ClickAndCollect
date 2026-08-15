@@ -38,15 +38,18 @@ namespace ClickAndCollect.Models.DALClasses
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 SqlCommand cmd = new SqlCommand(
-                    "SELECT COUNT(*) FROM dbo.User_ WHERE UserId = @userId AND Password = @password",
+                    "SELECT Password FROM dbo.User_ WHERE UserId = @userId",
                     connection);
 
                 cmd.Parameters.AddWithValue("@userId", userId);
-                cmd.Parameters.AddWithValue("@password", password);
                 await connection.OpenAsync();
 
-                int count = (int)await cmd.ExecuteScalarAsync();
-                return count > 0;
+                object? result = await cmd.ExecuteScalarAsync();
+                if (result == null)
+                    return false;
+
+                string storedHash = (string)result;
+                return BCrypt.Net.BCrypt.Verify(password, storedHash);
             }
         }
 
@@ -134,7 +137,7 @@ namespace ClickAndCollect.Models.DALClasses
                     connection);
 
                 cmd.Parameters.AddWithValue("@username", client.Username);
-                cmd.Parameters.AddWithValue("@password", client.Password);
+                cmd.Parameters.AddWithValue("@password", BCrypt.Net.BCrypt.HashPassword(client.Password));
                 cmd.Parameters.AddWithValue("@firstname", client.Firstname);
                 cmd.Parameters.AddWithValue("@lastname", client.Lastname);
                 cmd.Parameters.AddWithValue("@phonenumber", client.Phonenumber);

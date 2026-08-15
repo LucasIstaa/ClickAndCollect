@@ -40,7 +40,14 @@ namespace ClickAndCollect.Models.Classes
         public int BoxesInvolved
         {
             get { return boxesInvolved; }
-            set { boxesInvolved = value; }
+            set
+            {
+                if (value < 0)
+                {
+                    throw new InvalidBoxesCountException("Le nombre de caisses impliquées ne peut pas être négatif.");
+                }
+                boxesInvolved = value;
+            }
         }
 
         public Client Client
@@ -158,7 +165,7 @@ namespace ClickAndCollect.Models.Classes
             return await dal.GetClientOrdersAsync(clientid);
         }
 
-        public static async Task<Order> GetOrderAsync(IOrderDAL dal, int id)
+        public static async Task<Order?> GetOrderAsync(IOrderDAL dal, int id)
         {
             return await dal.GetOrderAsync(id);
         }
@@ -202,9 +209,69 @@ namespace ClickAndCollect.Models.Classes
             return await dal.GetTodayOrdersByStoreAsync(storeId);
         }
 
-        public static async Task<bool> UpdateOrder(IOrderDAL dal, Order o)
+        public static async Task<bool> UpdateOrder(IOrderDAL dal, Order o, OrderStatus expectedStatus)
         {
-            return await dal.UpdateOrderAsync(o);
+            return await dal.UpdateOrderAsync(o, expectedStatus);
+        }
+
+        public static async Task<bool> FinalizePreparationAsync(IOrderDAL dal, int orderId, int boxesUsed)
+        {
+            if (boxesUsed < 0)
+            {
+                throw new InvalidBoxesCountException("Le nombre de caisses utilisées ne peut pas être négatif.");
+            }
+
+            Order? order = await dal.GetOrderAsync(orderId);
+            if (order == null)
+            {
+                return false;
+            }
+
+            if (order.Status != OrderStatus.Placed)
+            {
+                return false;
+            }
+
+            OrderStatus expectedStatus = order.Status;
+            order.BoxesInvolved = order.BoxesInvolved + boxesUsed;
+            order.Status = OrderStatus.Prepared;
+
+            return await dal.UpdateOrderAsync(order, expectedStatus);
+        }
+
+        public static async Task<bool> SetBoxesReturnedAsync(IOrderDAL dal, int orderId, int nbBoxes)
+        {
+            if (nbBoxes < 0)
+            {
+                throw new InvalidBoxesCountException("Le nombre de caisses retournées ne peut pas être négatif.");
+            }
+
+            Order? order = await dal.GetOrderAsync(orderId);
+            if (order == null)
+            {
+                return false;
+            }
+
+            if (nbBoxes > order.BoxesInvolved)
+            {
+                throw new ArgumentException("Le nombre de caisses retournées ne peut pas dépasser le nombre de caisses utilisées.");
+            }
+
+            OrderStatus expectedStatus = order.Status;
+            order.BoxesInvolved = order.BoxesInvolved - nbBoxes;
+
+            return await dal.UpdateOrderAsync(order, expectedStatus);
+        }
+
+        public static async Task<Decimal> CalculateFinalPriceAsync(IOrderDAL dal, int orderId)
+        {
+            Order? order = await dal.GetOrderAsync(orderId);
+            if (order == null)
+            {
+                throw new ArgumentException("Commande introuvable.");
+            }
+
+            return order.TotalPrice();
         }
     }
 }

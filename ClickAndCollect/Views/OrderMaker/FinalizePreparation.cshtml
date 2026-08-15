@@ -14,7 +14,7 @@
 </div>
 
 <form method="post" asp-controller="OrderMaker" asp-action="ConfirmPreparation">
-    <input type="hidden" name="orderId" value="@Model.OrderId" />
+    <input type="hidden" asp-for="OrderId" />
     <div class="mb-3">
         <label for="boxesUsed" class="form-label">Number of boxes used for preparation</label>
         <input type="number" class="form-control" id="boxesUsed" name="boxesUsed" value="0" min="0" required />

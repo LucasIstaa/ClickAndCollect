@@ -1,4 +1,5 @@
-﻿@{
+@model ClickAndCollect.Models.ViewModels.RegisterViewModel
+@{
     ViewData["Title"] = "Register";
 }
 
@@ -23,41 +24,54 @@
 
 <form method="post" asp-controller="Account" asp-action="Register">
     <div class="mb-3">
-        <label for="username" class="form-label">Username</label>
-        <input type="text" class="form-control" id="username" name="username" required />
+        <label asp-for="Username" class="form-label"></label>
+        <input asp-for="Username" class="form-control" />
+        <span asp-validation-for="Username" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
-        <input type="password" class="form-control" id="password" name="password" required />
+        <label asp-for="Password" class="form-label"></label>
+        <input asp-for="Password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label for="firstname" class="form-label">First name</label>
-        <input type="text" class="form-control" id="firstname" name="firstname" required />
+        <label asp-for="Firstname" class="form-label"></label>
+        <input asp-for="Firstname" class="form-control" />
+        <span asp-validation-for="Firstname" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label for="lastname" class="form-label">Last name</label>
-        <input type="text" class="form-control" id="lastname" name="lastname" required />
+        <label asp-for="Lastname" class="form-label"></label>
+        <input asp-for="Lastname" class="form-control" />
+        <span asp-validation-for="Lastname" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label for="phonenumber" class="form-label">Phone number</label>
-        <input type="text" class="form-control" id="phonenumber" name="phonenumber" required />
+        <label asp-for="Phonenumber" class="form-label"></label>
+        <input asp-for="Phonenumber" class="form-control" />
+        <span asp-validation-for="Phonenumber" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label for="postalcode" class="form-label">Postal code</label>
-        <input type="number" class="form-control" id="postalcode" name="postalcode" required />
+        <label asp-for="Postalcode" class="form-label"></label>
+        <input asp-for="Postalcode" class="form-control" />
+        <span asp-validation-for="Postalcode" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label for="cityname" class="form-label">City</label>
-        <input type="text" class="form-control" id="cityname" name="cityname" required />
+        <label asp-for="Cityname" class="form-label"></label>
+        <input asp-for="Cityname" class="form-control" />
+        <span asp-validation-for="Cityname" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label for="streetname" class="form-label">Street</label>
-        <input type="text" class="form-control" id="streetname" name="streetname" required />
+        <label asp-for="Streetname" class="form-label"></label>
+        <input asp-for="Streetname" class="form-control" />
+        <span asp-validation-for="Streetname" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label for="housenumber" class="form-label">House number</label>
-        <input type="number" class="form-control" id="housenumber" name="housenumber" required />
+        <label asp-for="Housenumber" class="form-label"></label>
+        <input asp-for="Housenumber" class="form-control" />
+        <span asp-validation-for="Housenumber" class="text-danger"></span>
     </div>
     <button type="submit" class="btn btn-primary">Create account</button>
     <a asp-controller="Account" asp-action="Login" class="btn btn-link">Already have an account? Login</a>
 </form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

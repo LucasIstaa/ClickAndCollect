@@ -42,9 +42,14 @@ namespace ClickAndCollect.Controllers
         [RoleFilter("OrderMaker")]
         public async Task<IActionResult> ViewOrderDetails(int orderId)
         {
+            int? storeId = HttpContext.Session.GetInt32("StoreId");
+            if (storeId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
 
             Order? order = await Order.GetOrderAsync(orderDAL, orderId);
-            if (order == null)
+            if (order == null || order.Store.StoreId != storeId.Value)
             {
                 return RedirectToAction("CheckTomorrowOrders");
             }
@@ -57,9 +62,14 @@ namespace ClickAndCollect.Controllers
         [RoleFilter("OrderMaker")]
         public async Task<IActionResult> FinalizePreparation(int orderId)
         {
+            int? storeId = HttpContext.Session.GetInt32("StoreId");
+            if (storeId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
 
             Order? order = await Order.GetOrderAsync(orderDAL, orderId);
-            if (order == null)
+            if (order == null || order.Store.StoreId != storeId.Value || order.Status != OrderStatus.Placed)
             {
                 return RedirectToAction("CheckTomorrowOrders");
             }
@@ -71,12 +81,25 @@ namespace ClickAndCollect.Controllers
         [HttpPost]
         public async Task<IActionResult> ConfirmPreparation(int orderId, int boxesUsed)
         {
+            int? storeId = HttpContext.Session.GetInt32("StoreId");
+            if (storeId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
 
             Order? order = await Order.GetOrderAsync(orderDAL, orderId);
-            order.BoxesInvolved = order.BoxesInvolved + boxesUsed;
-            order.Status = OrderStatus.Prepared;
+            if (order == null || order.Store.StoreId != storeId.Value || order.Status != OrderStatus.Placed)
+            {
+                return RedirectToAction("CheckTomorrowOrders");
+            }
 
-            if (await Order.UpdateOrder(orderDAL, order))
+            if (boxesUsed < 0)
+            {
+                ViewBag.Error = "Invalid number of boxes used.";
+                return View("FinalizePreparation", order);
+            }
+
+            if (await Order.FinalizePreparationAsync(orderDAL, orderId, boxesUsed))
             {
                 return RedirectToAction("CheckTomorrowOrders");
             }
