@@ -1,4 +1,7 @@
-﻿namespace ClickAndCollect.Models.Classes
+﻿using ClickAndCollect.Models.DALClasses;
+using ClickAndCollect.Models.DALInterfaces;
+
+namespace ClickAndCollect.Models.Classes
 {
     public class OrderLine : IDisposable
     {
@@ -55,6 +58,12 @@
         {
             return HashCode.Combine(Product, Order);
         }
+
+        public static Task<bool> AddOrderlinesAsync(IOrderlineDAL dal, List<OrderLine> lines) 
+        {
+            return dal.AddOrderlinesAsync(lines);
+        } 
+
 
         public void Dispose()
         {

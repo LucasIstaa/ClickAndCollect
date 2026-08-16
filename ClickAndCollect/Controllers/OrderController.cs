@@ -11,12 +11,16 @@ namespace ClickAndCollect.Controllers
         private readonly IOrderDAL orderDAL;
         private readonly IStoreDAL storeDAL;
         private readonly ITimeslotDAL tslotDAL;
+        private readonly IOrderlineDAL olDAL;
+        private readonly IUserDAL userDAL;
 
-        public OrderController(IOrderDAL odal, IStoreDAL sdal, ITimeslotDAL tdal)
+        public OrderController(IOrderDAL odal, IStoreDAL sdal, ITimeslotDAL tdal, IOrderlineDAL oldal, IUserDAL idal)
         {
             this.orderDAL = odal;
             this.storeDAL = sdal;
             this.tslotDAL = tdal;
+            this.olDAL = oldal;
+            this.userDAL = idal;
         }
 
         public IActionResult Index()
@@ -48,17 +52,19 @@ namespace ClickAndCollect.Controllers
         [RoleFilter("Client")]
         public async Task<IActionResult> PlaceOrder(int storeid, int timeslotid) 
         {
-            int? cid = HttpContext.Session.GetInt32("UserId");
+
             Cart c = HttpContext.Session.GetObject<Cart>("cart");
-            Client cl = new Client(cid.Value,null,null,null, null, null, 0, null, null, 0);
-            Store st = await Store.GetStoreAsync(storeDAL, storeid);
+            
 
-            Timeslot t = await Timeslot.GetTimeslotAsync(tslotDAL,timeslotid);
-            DateOnly tomorrow = DateOnly.FromDateTime(DateTime.Now.AddDays(1));
-
-            if (c != null) 
+            if (c != null && c.Lines != null) 
             {
-                Order o = new Order(-1,OrderStatus.Placed, 0, cl, st, t, tomorrow);
+                int? cid = HttpContext.Session.GetInt32("UserId");
+                User? client = await Models.Classes.User.GetUser(cid.Value, userDAL);
+                Store st = await Store.GetStoreAsync(storeDAL, storeid);
+                st.Timeslots = await Timeslot.GetStoreTimeslotsAsync(tslotDAL,st.StoreId);
+                Timeslot? t = st.GetTimeslotById(timeslotid);
+                DateOnly tomorrow = DateOnly.FromDateTime(DateTime.Now.AddDays(1));
+                Order o = new Order(-1,OrderStatus.Placed, 0, (Client) client, st, t, null,tomorrow);
                 List<OrderLine> orderlines = new List<OrderLine>();
 
                 foreach (CartLine line in c.Lines) 
@@ -68,11 +74,19 @@ namespace ClickAndCollect.Controllers
                 }
 
                 o.Orderlines = orderlines;
-                if (await Order.AddOrderAsync(orderDAL, o)) 
-                {
-                    HttpContext.Session.Remove("cart");
-                    return View("OrderConfirmation", o);
-                }
+
+                
+                    if (await Order.AddOrderAsync(orderDAL, o))
+                    {
+                        if (await OrderLine.AddOrderlinesAsync(olDAL, o.Orderlines))
+                        {
+                            HttpContext.Session.Remove("cart");
+                            return View("OrderConfirmation", o);
+                        }
+                        
+                    }
+               
+                
                 
             }
 

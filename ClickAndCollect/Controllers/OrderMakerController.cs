@@ -54,7 +54,13 @@ namespace ClickAndCollect.Controllers
                 return RedirectToAction("CheckTomorrowOrders");
             }
 
-            order.Orderlines = await Order.GetOrderlinesAsync(orderDAL,orderId);
+            order = await Order.GetOrderlinesAsync(orderDAL,order);
+
+            foreach (OrderLine l in order.Orderlines) 
+            {
+                l.Order = order;
+            }
+
 
             return View("ViewOrderDetails", order);
         }

@@ -9,11 +9,10 @@ namespace ClickAndCollect.Models.DALInterfaces
         Task<bool> RemoveOrderAsync(Order o);
         Task<List<Order>> GetAllOrdersAsync();
         Task<List<Order>> GetClientOrdersAsync(int id);
-        Task<List<OrderLine>> GetOrderlinesAsync(int id);
+        Task<Order> GetOrderlinesAsync(Order o);
         Task<Order?> GetOrderAsync(int id);
         Task<List<Order>> GetTodayOrdersByStoreAsync(int storeId);
         Task<bool> FinalizeOrderAsync(int orderId);
-        Task<bool> AddOrderlinesAsync(List<OrderLine> lines);
         Task<List<Order>> GetTomorrowOrdersByStoreAsync(int storeId);
     }
 }

@@ -9,7 +9,8 @@
     <div class="card-body">
         <h5 class="card-title">Order Information</h5>
         <p><strong>Client:</strong> @Model.Client.Firstname @Model.Client.Lastname</p>
-        <p><strong>Pickup time:</strong> @Model.Timeslot.Start.ToString("HH:mm") - @Model.Timeslot.End.ToString("HH:mm")</p>
+        <p><strong>Pickup time:</strong>@Model.Timeslot.Start.ToString("HH:mm") - @Model.Timeslot.End.ToString("HH:mm")</p>
+
         <p><strong>Boxes used:</strong> @Model.BoxesInvolved</p>
         <p><strong>Status:</strong> @Model.Status</p>
     </div>

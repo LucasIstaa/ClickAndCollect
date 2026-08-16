@@ -56,5 +56,39 @@
             Dispose();
         }
 
+        public void AddProduct(Product product)
+        {
+            var existingLine = lines.FirstOrDefault(l => l.Product.Equals(product));
+
+            if (existingLine != null)
+            {
+                existingLine.IncreaseQuantity(1);
+            }
+            else
+            {
+                var line = new CartLine(1, product, this);
+                lines.Add(line);
+            }
+        }
+
+        public void RemoveProduct(int id) 
+        {
+            for (int i = 0; i < Lines.Count; i++)
+            {
+                if (Lines[i].Product.ProductId == id)
+                {
+                    if (Lines[i].Quantity > 1)
+                    {
+                        Lines[i].Quantity--;
+                    }
+                    else
+                    {
+                        Lines.RemoveAt(i);
+                    }
+                    break;
+                }
+            }
+        }
+
     }
 }

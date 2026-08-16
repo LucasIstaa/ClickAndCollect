@@ -30,13 +30,10 @@ namespace ClickAndCollect.Controllers
             {
                 c = new Cart();
                 HttpContext.Session.SetObject("cart", c);
-                cl = new List<CartLine>();
-                return View("ManageCart",cl);
+                return View("ManageCart",c);
             }
 
-             cl = c.Lines;
-
-            return View("ManageCart",cl);
+            return View("ManageCart",c);
         }
 
         [RoleFilter("Client")]
@@ -50,21 +47,7 @@ namespace ClickAndCollect.Controllers
             }
                 
 
-            for (int i = 0; i < c.Lines.Count; i++)
-            {
-                if (c.Lines[i].Product.ProductId == id)
-                {
-                    if (c.Lines[i].Quantity > 1)
-                    {
-                        c.Lines[i].Quantity--;
-                    }
-                    else
-                    {
-                        c.Lines.RemoveAt(i);
-                    }
-                    break;
-                }
-            }
+            c.RemoveProduct(id);
 
             HttpContext.Session.SetObject("cart", c);
 

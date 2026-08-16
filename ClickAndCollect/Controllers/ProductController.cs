@@ -22,16 +22,6 @@ namespace ClickAndCollect.Controllers
         {
             ViewBag.SelectedCategory = categoryid;
 
-            string? role = HttpContext.Session.GetString("Role");
-            if (role == "Cashier")
-            {
-                return RedirectToAction("ConsultTodayClientList", "Cashier");
-            }
-            if (role == "OrderMaker")
-            {
-                return RedirectToAction("CheckTomorrowOrders", "OrderMaker");
-            }
-
             List<Product> products = new List<Product>();
 
             if (categoryid.HasValue)
@@ -59,45 +49,16 @@ namespace ClickAndCollect.Controllers
         {
             Product p = await Product.GetProductAsync(productDAL, id);
 
-            Cart c = HttpContext.Session.GetObject<Cart>("cart");
-
-            if (c == null)
+            if (p == null) 
             {
-                c = new Cart();
-                CartLine cl = new CartLine(1, p);
-                c.AddCartline(cl);
-            }
-            else
-            {
-                bool ok = false;
-
-                foreach (CartLine cl in c.Lines)
-                {
-                    if (cl.Product.Equals(p))
-                    {
-                        cl.Quantity = cl.Quantity + 1;
-                        ok = true;
-                        break;
-                    }
-                }
-
-                if (ok == false)
-                {
-                    CartLine cl = new CartLine(1, p);
-                    c.AddCartline(cl);
-                }
+                return NotFound();
             }
 
+            Cart c = HttpContext.Session.GetObject<Cart>("cart") ?? new Cart();
+            c.AddProduct(p);
             HttpContext.Session.SetObject("cart", c);
 
-
-
-            if (categoryid.HasValue) 
-            {
-                return RedirectToAction("Browse", new { categoryid });
-            }
-                
-            return RedirectToAction("Browse");
+            return categoryid.HasValue ? RedirectToAction("Browse", new { categoryid }) : RedirectToAction("Browse");
         }
     }
 }

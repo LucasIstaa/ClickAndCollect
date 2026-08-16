@@ -66,7 +66,7 @@ namespace ClickAndCollect.Models.Classes
         public List<OrderLine> Orderlines
         {
             get { return orderlines; }
-            set { orderlines = value; }
+            set { if (value != null) { orderlines = value; } }
         }
 
         public void AddOrderLine(OrderLine line)
@@ -185,9 +185,9 @@ namespace ClickAndCollect.Models.Classes
             return await dal.FinalizeOrderAsync(orderId);
         }
 
-        public static async Task<List<OrderLine>> GetOrderlinesAsync(IOrderDAL dal, int id)
+        public static async Task<Order> GetOrderlinesAsync(IOrderDAL dal, Order o)
         {
-            return await dal.GetOrderlinesAsync(id);
+            return await dal.GetOrderlinesAsync(o);
         }
 
         public static async Task<List<Order>> GetTodayOrdersByStoreAsync(IOrderDAL dal, int storeId)

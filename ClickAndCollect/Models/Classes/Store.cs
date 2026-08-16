@@ -58,6 +58,13 @@ namespace ClickAndCollect.Models.Classes
             set { housenumber = value; }
         }
 
+        public List<Timeslot> Timeslots
+        {
+            get { return timeslots; }
+            set { timeslots = value; }
+        }
+
+
         public void AddOrder(Order order) 
         {
             if (!orders.Contains(order))
@@ -140,7 +147,7 @@ namespace ClickAndCollect.Models.Classes
 
         //Constructeurs
 
-        public Store(string phonenumber, string name, int postalcode, string cityname, string streetname, int housenumber, TimeOnly start, TimeOnly end)
+        public Store(string phonenumber, string name, int postalcode, string cityname, string streetname, int housenumber)
         {
             PhoneNumber = phonenumber;
             Name = name;
@@ -148,10 +155,9 @@ namespace ClickAndCollect.Models.Classes
             CityName = cityname;
             StreetName = streetname;
             HouseNumber = housenumber;
-            AddTimeslot(new Timeslot(start, end, this));
         }
 
-        public Store(int storeid, string phonenumber, string name, int postalcode, string cityname, string streetname, int housenumber, TimeOnly start, TimeOnly end) : this(phonenumber, name, postalcode, cityname, streetname, housenumber, start, end)
+        public Store(int storeid, string phonenumber, string name, int postalcode, string cityname, string streetname, int housenumber) : this(phonenumber, name, postalcode, cityname, streetname, housenumber)
         {
             this.storeid = storeid;
         }
@@ -185,5 +191,11 @@ namespace ClickAndCollect.Models.Classes
         {
             return HashCode.Combine(storeid);
         }
+
+        public Timeslot? GetTimeslotById(int id)
+        {
+            return timeslots.FirstOrDefault(ts => ts.TimeslotId == id);
+        }
+
     }
 }
