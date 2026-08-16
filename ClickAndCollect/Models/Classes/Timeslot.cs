@@ -56,6 +56,36 @@ namespace ClickAndCollect.Models.Classes
             return false;
         }
 
+
+
+        public bool RemoveOrder(Order order)
+        {
+            int index = -1;
+
+            for (int i = 0; i < ordernumber; i++)
+            {
+                if (orders[i] != null && orders[i].Equals(order))
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index == -1)
+                throw new ArgumentException("Order not found in this timeslot");
+
+            for (int i = index; i < ordernumber - 1; i++)
+            {
+                orders[i] = orders[i + 1];
+            }
+
+            orders[ordernumber - 1] = null;
+
+            ordernumber--;
+
+            return true;
+        }
+
         public Timeslot(TimeOnly start, TimeOnly end, Store store) 
         {
             this.Start = start;
@@ -73,10 +103,6 @@ namespace ClickAndCollect.Models.Classes
         {
             this.TimeslotId = id;
             this.ordernumber = ordernumber;
-        }
-        public Timeslot(int id) 
-        {
-            this.TimeslotId = id;
         }
 
         public override bool Equals(object? obj)

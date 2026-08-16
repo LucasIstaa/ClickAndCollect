@@ -77,5 +77,16 @@ namespace ClickAndCollect.Models.Classes
             bool saved = await dal.CreateAccountAsync(c);
             return saved;
         }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is User user &&
+                   UserId == user.UserId;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(UserId);
+        }
     }
 }

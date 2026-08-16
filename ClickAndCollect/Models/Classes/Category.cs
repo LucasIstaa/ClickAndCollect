@@ -6,7 +6,8 @@ namespace ClickAndCollect.Models.Classes
     public class Category
     {
         private int id;
-        private String name;
+        private string name;
+
         [JsonIgnore]
         private List<Product> products;
 
@@ -16,43 +17,48 @@ namespace ClickAndCollect.Models.Classes
             set { id = value; }
         }
 
-        public String Name 
+        public string Name
         {
             get { return name; }
             set { name = value; }
         }
 
-        public void AddProduct(Product pro) 
+        [JsonConstructor]
+        public Category(int id, string name)
         {
-            if (!products.Contains(pro)) 
-            {
-                products.Add(pro);
-            }
+            this.Id = id;
+            this.Name = name;
+            this.products = new List<Product>();
         }
-
-        public Category() { }
 
         public Category(string name)
         {
             this.Name = name;
-            products = new List<Product>();
+            this.products = new List<Product>();
         }
-        public Category(int id, String name) : this(name)
+
+        public void AddProduct(Product pro)
         {
-            this.Id = id;
+            if (!products.Contains(pro))
+                products.Add(pro);
         }
 
-        //Méthodes
+        public void RemoveProduct(Product pro)
+        {
+            if (!products.Contains(pro))
+                throw new ArgumentException("Product not found in category");
 
-        public async static Task<List<Category>> GetAllCategories(ICategoryDAL dal) 
+            products.Remove(pro);
+        }
+
+        public async static Task<List<Category>> GetAllCategories(ICategoryDAL dal)
         {
             return await dal.GetAllCategoriesAsync();
         }
 
-        public async static Task<Category> GetCategory(int id, ICategoryDAL dal) 
+        public async static Task<Category> GetCategory(int id, ICategoryDAL dal)
         {
             return await dal.GetCategoryAsync(id);
         }
-        
     }
 }

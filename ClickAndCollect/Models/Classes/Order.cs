@@ -2,12 +2,13 @@
 
 namespace ClickAndCollect.Models.Classes
 {
-    public class Order
+    public class Order : IDisposable
     {
         private int orderid;
         private OrderStatus status;
         private int boxesInvolved;
         private DateOnly fetchdate;
+        private bool _disposed = false;
         private Client client;
         private List<OrderLine> orderlines = new List<OrderLine>();
         private Store store;
@@ -65,7 +66,7 @@ namespace ClickAndCollect.Models.Classes
         public List<OrderLine> Orderlines
         {
             get { return orderlines; }
-            set { orderlines = value; }
+            set { if (value != null) { orderlines = value; } }
         }
 
         public void AddOrderLine(OrderLine line)
@@ -76,13 +77,23 @@ namespace ClickAndCollect.Models.Classes
             }
         }
 
+        public void RemoveOrderLine(OrderLine line)
+        {
+            if (orderlines.Contains(line))
+                orderlines.Remove(line);
+            else
+                throw new ArgumentException("OrderLine not found in this order");
+        }
+
+
+
         public Order(OrderStatus status, int boxesInvolved, Client client, Product product, int quantity, Store store, Timeslot slot, DateOnly fetchdate)
         {
             Status = status;
             BoxesInvolved = boxesInvolved;
             client.AddOrder(this);
             Client = client;
-            AddOrderLine(new OrderLine(quantity, product, this));
+            new OrderLine(quantity, product, this);
             Store = store;
             store.AddOrder(this);
             Fetchdate = fetchdate;
@@ -100,7 +111,6 @@ namespace ClickAndCollect.Models.Classes
             this.OrderId = orderid;
         }
 
-        //pour la db
         public Order(int orderid, OrderStatus status, int boxesInvolved, Client client, Store store, Timeslot slot, List<OrderLine> lines, DateOnly fetchdate)
         {
             OrderId = orderid;
@@ -119,30 +129,6 @@ namespace ClickAndCollect.Models.Classes
             }
 
             Timeslot = slot;
-        }
-
-        public Order(int orderid, OrderStatus status, int boxesInvolved, Client client, Store store, Timeslot slot, DateOnly fetchdate)
-        {
-            OrderId = orderid;
-            Status = status;
-            BoxesInvolved = boxesInvolved;
-            Client = client;
-            client.AddOrder(this);
-            Store = store;
-            store.AddOrder(this);
-            Fetchdate = fetchdate;
-
-            if (!slot.AddOrder(this))
-            {
-                throw new InvalidOperationException("Ce créneau horaire est complet (10 commandes max).");
-            }
-
-            Timeslot = slot;
-        }
-
-        public Order(int id)
-        {
-            OrderId = id;
         }
 
         //Méthodes
@@ -199,9 +185,9 @@ namespace ClickAndCollect.Models.Classes
             return await dal.FinalizeOrderAsync(orderId);
         }
 
-        public static async Task<List<OrderLine>> GetOrderlinesAsync(IOrderDAL dal, int id)
+        public static async Task<Order> GetOrderlinesAsync(IOrderDAL dal, Order o)
         {
-            return await dal.GetOrderlinesAsync(id);
+            return await dal.GetOrderlinesAsync(o);
         }
 
         public static async Task<List<Order>> GetTodayOrdersByStoreAsync(IOrderDAL dal, int storeId)
@@ -272,6 +258,25 @@ namespace ClickAndCollect.Models.Classes
             }
 
             return order.TotalPrice();
+        }
+
+        public void Dispose()
+        {
+            if (!_disposed) 
+            {
+                _disposed = true;
+
+                foreach(OrderLine o in orderlines) 
+                {
+                    o.Dispose();
+                }
+                GC.SuppressFinalize(this);
+            }
+        }
+
+        ~Order() 
+        {
+            Dispose();
         }
     }
 }

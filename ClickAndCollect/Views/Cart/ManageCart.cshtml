@@ -1,8 +1,8 @@
-﻿@model List<ClickAndCollect.Models.Classes.CartLine>
+﻿@model ClickAndCollect.Models.Classes.Cart
 
 <h2>Your Cart</h2>
 
-@if (Model == null || !Model.Any())
+@if (Model.Lines == null || !Model.Lines.Any())
 {
     <p>Your cart is empty.</p>
 }
@@ -19,7 +19,7 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var line in Model)
+            @foreach (var line in Model.Lines)
             {
                 <tr>
                     <td>@line.Product.Name</td>
@@ -41,7 +41,7 @@ else
 
     <h3>
         Total :
-        @Model.Sum(l => l.Product.Price * l.Quantity) €
+        @Model.Lines.Sum(l => l.Product.Price * l.Quantity) €
     </h3>
 
     <form asp-controller="Cart" asp-action="ClearCart" method="post">
@@ -49,11 +49,10 @@ else
             Clear Cart
         </button>
     </form>
+
     <form asp-controller="Order" asp-action="ChooseStore" method="get">
         <button type="submit" class="btn btn-success">
             Place Order
         </button>
     </form>
-
-
 }

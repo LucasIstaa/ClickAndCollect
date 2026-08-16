@@ -46,7 +46,7 @@ namespace ClickAndCollect.Models.DALClasses
                         TimeOnly end = TimeOnly.FromTimeSpan(reader.GetTimeSpan(2));
                         int orderCount = reader.GetInt32(3);
 
-                        Store store = new Store(storeId);
+                        Store store = new Store(storeId, null, null, -1, null, null, -1);
 
                         Timeslot t = new Timeslot(tid, start, end, store, orderCount);
 
@@ -86,7 +86,7 @@ namespace ClickAndCollect.Models.DALClasses
                         int storeId = reader.GetInt32(reader.GetOrdinal("StoreId"));
                         int orderCount = reader.GetInt32(reader.GetOrdinal("OrderCount"));
 
-                        Store store = new Store(storeId);
+                        Store store = new Store(storeId, null, null, -1, null, null, -1);
 
                         return new Timeslot(tid, start, end, store, orderCount);
                     }

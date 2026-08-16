@@ -1,4 +1,5 @@
 ﻿using ClickAndCollect.Models.DALInterfaces;
+using System.Text.Json.Serialization;
 
 namespace ClickAndCollect.Models.Classes
 {
@@ -33,18 +34,18 @@ namespace ClickAndCollect.Models.Classes
             set { category = value; }
         }
 
-        public Product() { }
-
-        public Product(String name, decimal price, Category cat) 
+        public Product(String name, decimal price, Category category) 
         {
             this.Name = name;
             this.Price = price;
-            this.Category = cat;
+            this.Category = category;
+            category.AddProduct(this);
         }
 
-        public Product(int id,String name, decimal price,Category cat) : this(name,price,cat)
+        [JsonConstructor]
+        public Product(int productid,String name, decimal price,Category category) : this(name,price, category)
         {
-            this.ProductId = id;
+            this.ProductId = productid;
         }
 
         //Méthodes

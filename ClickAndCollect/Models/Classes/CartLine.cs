@@ -1,8 +1,12 @@
-﻿namespace ClickAndCollect.Models.Classes
+﻿using System.Text.Json.Serialization;
+
+namespace ClickAndCollect.Models.Classes
 {
-    public class CartLine
+    public class CartLine: IDisposable
     {
         private int quantity;
+        private bool _disposed = false;
+        public Cart cart;
         private Product product;
 
         public int Quantity 
@@ -17,12 +21,19 @@
             set { product = value; }
         }
 
-        public CartLine() { }
+        [JsonIgnore]
+        public Cart Cart 
+        {
+            get { return cart; }
+            set { this.cart = value; }
 
-        public CartLine(int quantity, Product product) 
+        }
+
+        public CartLine(int quantity, Product product, Cart cart) 
         {
             this.Quantity = quantity;
             this.Product = product;
+            this.Cart = cart;
         }
 
         public override bool Equals(object? obj)
@@ -34,6 +45,28 @@
         public override int GetHashCode()
         {
             return HashCode.Combine(Product);
+        }
+
+        public void Dispose()
+        {
+            if (!_disposed) 
+            {
+                _disposed = true;
+                this.cart.Dispose();
+                GC.SuppressFinalize(this);
+            }
+        }
+
+        ~CartLine() 
+        {
+            Dispose();
+        }
+
+        public void IncreaseQuantity(int amount)
+        {
+            if (amount <= 0)
+                throw new ArgumentException("La quantité à ajouter doit être positive.");
+            Quantity += amount;
         }
     }
 }
